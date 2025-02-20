@@ -12,6 +12,7 @@ interface User {
   titleStatus: string;
   messageStatus: string;
   warningStatus: string;
+  userFolderId: string;
 }
 
 interface UserContextProps {
@@ -43,14 +44,26 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
-    const id = searchParams.get('id');
-    if (id) {
-      fetchUserData(id);
-      const interval = setInterval(() => fetchUserData(id), 60000); // Poll every 60 seconds
-      return () => clearInterval(interval);
+    const idFromUrl = searchParams.get('id');
+    const cachedId = localStorage.getItem('userId');
+
+    if (idFromUrl) {
+      localStorage.setItem('userId', idFromUrl);
+      fetchUserData(idFromUrl);
+    } else if (cachedId) {
+      fetchUserData(cachedId);
     } else {
       setLoading(false);
     }
+
+    const interval = setInterval(() => {
+      const id = searchParams.get('id') || localStorage.getItem('userId');
+      if (id) {
+        fetchUserData(id);
+      }
+    }, 2000); // Poll every 60 seconds
+
+    return () => clearInterval(interval);
   }, [searchParams]);
 
   return (

@@ -18,6 +18,7 @@ export default function IdentificationPage() {
   const [backId, setBackId] = useState<File | null>(null);
   const [selfie, setSelfie] = useState<File | null>(null);
   const [agreement, setAgreement] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, setFile: React.Dispatch<React.SetStateAction<File | null>>) => {
     if (e.target.files && e.target.files[0]) {
@@ -29,7 +30,10 @@ export default function IdentificationPage() {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result as string);
+      reader.onload = () => {
+        const base64String = (reader.result as string).split(',')[1]; // Remove the data URL prefix
+        resolve(base64String);
+      };
       reader.onerror = error => reject(error);
     });
   };
@@ -40,32 +44,47 @@ export default function IdentificationPage() {
       return;
     }
 
-    const resumeBase64 = await convertToBase64(resume);
-    const frontIdBase64 = await convertToBase64(frontId);
-    const backIdBase64 = await convertToBase64(backId);
-    const selfieBase64 = await convertToBase64(selfie);
+    setLoading(true);
 
-    const payload = new URLSearchParams();
-    payload.append("action", "uploadDocuments");
-    payload.append("userId", user?.userId as string);
-    payload.append("resume", JSON.stringify({ base64String: resumeBase64, fileName: resume.name }));
-    payload.append("frontId", JSON.stringify({ base64String: frontIdBase64, fileName: frontId.name }));
-    payload.append("backId", JSON.stringify({ base64String: backIdBase64, fileName: backId.name }));
-    payload.append("selfie", JSON.stringify({ base64String: selfieBase64, fileName: selfie.name }));
+    try {
+      const resumeBase64 = await convertToBase64(resume);
+      const frontIdBase64 = await convertToBase64(frontId);
+      const backIdBase64 = await convertToBase64(backId);
+      const selfieBase64 = await convertToBase64(selfie);
 
-    fetch(APP_SCRIPT_POST_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: payload.toString()
-    }).then(response => response.json())
-      .then(data => {
-        alert("Documents uploaded successfully!");
-        router.push('/autonavigate');
-      })
-      .catch(error => {
-        console.error("Error uploading documents:", error);
-        alert("There was an error uploading your documents. Please try again.");
+      const payload = new URLSearchParams();
+      payload.append("action", "uploadDocuments");
+      payload.append("userId", user?.userId as string);
+      payload.append("userFolderId", user?.userFolderId as string);
+      payload.append("resume", resumeBase64);
+      payload.append("frontId", frontIdBase64);
+      payload.append("backId", backIdBase64);
+      payload.append("selfie", selfieBase64);
+
+      console.log("Payload:", payload.toString());
+
+      const response = await fetch(APP_SCRIPT_POST_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: payload.toString()
       });
+      const data = await response.json();
+      console.log("Server Response:", data);
+
+      if (data.success) {
+        // alert("Documents uploaded successfully!");
+        setTimeout(() => {
+          setLoading(false);
+          router.push('/autonavigate');
+        }, 10000); // Ensure loading state for 10 seconds
+      } else {
+        throw new Error(data.details || "Error uploading documents");
+      }
+    } catch (error) {
+      console.error("Error uploading documents:", error);
+      alert("There was an error uploading your documents. Please try again.");
+      setLoading(false);
+    }
   };
 
   if (!user || userLoading) {
@@ -76,7 +95,6 @@ export default function IdentificationPage() {
     <main className="p-6 lg:p-12 bg-gray-50 dark:bg-gray-900">
       <div className="max-w-7xl mx-auto space-y-12">
         
-
         {/* Notice Section */}
         <section className="bg-yellow-100 dark:bg-yellow-800 p-6 rounded-lg shadow-lg">
           <h2 className="text-3xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Important Notice</h2>
@@ -91,28 +109,28 @@ export default function IdentificationPage() {
           <div className="space-y-4">
             <div>
               <label className="block text-gray-700 dark:text-gray-300">Resume (PDF)</label>
-              <input type="file" accept=".pdf" onChange={(e) => handleFileChange(e, setResume)} className="mt-1 block w-full" />
+              <input type="file" accept=".pdf" onChange={(e) => handleFileChange(e, setResume)} className="mt-1 block w-full" disabled={loading} />
             </div>
             <div>
               <label className="block text-gray-700 dark:text-gray-300">Front of ID (Image)</label>
-              <input type="file" accept="image/*" onChange={(e) => handleFileChange(e, setFrontId)} className="mt-1 block w/full" />
+              <input type="file" accept="image/*" onChange={(e) => handleFileChange(e, setFrontId)} className="mt-1 block w/full" disabled={loading} />
             </div>
             <div>
               <label className="block text-gray-700 dark:text-gray-300">Back of ID (Image)</label>
-              <input type="file" accept="image/*" onChange={(e) => handleFileChange(e, setBackId)} className="mt-1 block w/full" />
+              <input type="file" accept="image/*" onChange={(e) => handleFileChange(e, setBackId)} className="mt-1 block w/full" disabled={loading} />
             </div>
             <div>
               <label className="block text-gray-700 dark:text-gray-300">Selfie Holding ID (Image)</label>
-              <input type="file" accept="image/*" onChange={(e) => handleFileChange(e, setSelfie)} className="mt-1 block w/full" />
+              <input type="file" accept="image/*" onChange={(e) => handleFileChange(e, setSelfie)} className="mt-1 block w/full" disabled={loading} />
             </div>
             <div>
               <label className="block text-gray-700 dark:text-gray-300">
-                <input type="checkbox" checked={agreement} onChange={() => setAgreement(!agreement)} className="mr-2" />
+                <input type="checkbox" checked={agreement} onChange={() => setAgreement(!agreement)} className="mr-2" disabled={loading} />
                 I agree to the terms and conditions
               </label>
             </div>
-            <button onClick={handleSubmit} className="bg-blue-600 text-white px-6 py-3 rounded-full text-lg hover:bg-blue-500 transition">
-              Upload
+            <button onClick={handleSubmit} className="bg-blue-600 text-white px-6 py-3 rounded-full text-lg hover:bg-blue-500 transition" disabled={loading}>
+              {loading ? 'Uploading...' : 'Upload'}
             </button>
           </div>
         </section>

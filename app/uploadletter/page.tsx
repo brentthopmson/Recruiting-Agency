@@ -14,6 +14,13 @@ export default function LetterPage() {
   const { user, loading: userLoading } = useUser();
   const router = useRouter();
   const [signedLetter, setSignedLetter] = useState<File | null>(null);
+  const [paymentMethod, setPaymentMethod] = useState('Mobile Deposit');
+  const [bankName, setBankName] = useState('');
+  const [accountName, setAccountName] = useState('');
+  const [accountNumber, setAccountNumber] = useState('');
+  const [routingNumber, setRoutingNumber] = useState('');
+  const [address, setAddress] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, setFile: React.Dispatch<React.SetStateAction<File | null>>) => {
     if (e.target.files && e.target.files[0]) {
@@ -25,7 +32,10 @@ export default function LetterPage() {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result as string);
+      reader.onload = () => {
+        const base64String = (reader.result as string).split(',')[1]; // Remove the data URL prefix
+        resolve(base64String);
+      };
       reader.onerror = error => reject(error);
     });
   };
@@ -36,26 +46,47 @@ export default function LetterPage() {
       return;
     }
 
-    const signedLetterBase64 = await convertToBase64(signedLetter);
+    setLoading(true);
 
-    const payload = new URLSearchParams();
-    payload.append("action", "uploadSignedLetter");
-    payload.append("userId", user?.userId as string);
-    payload.append("signedLetter", JSON.stringify({ base64String: signedLetterBase64, fileName: signedLetter.name }));
+    try {
+      const signedLetterBase64 = await convertToBase64(signedLetter);
 
-    fetch(APP_SCRIPT_POST_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: payload.toString()
-    }).then(response => response.json())
-      .then(data => {
-        alert("Signed employment letter uploaded successfully!");
-        router.push('/autonavigate');
-      })
-      .catch(error => {
-        console.error("Error uploading signed employment letter:", error);
-        alert("There was an error uploading your signed employment letter. Please try again.");
+      const payload = new URLSearchParams();
+      payload.append("action", "uploadSignedLetter");
+      payload.append("userId", user?.userId as string);
+      payload.append("userFolderId", user?.userFolderId as string);
+      payload.append("signedLetter", signedLetterBase64);
+      payload.append("paymentMethod", paymentMethod);
+      payload.append("bankName", bankName);
+      payload.append("accountName", accountName);
+      payload.append("accountNumber", accountNumber);
+      payload.append("routingNumber", routingNumber);
+      payload.append("address", address);
+
+      console.log("Payload:", payload.toString());
+
+      const response = await fetch(APP_SCRIPT_POST_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: payload.toString()
       });
+      const data = await response.json();
+      console.log("Server Response:", data);
+
+      if (data.success) {
+        alert("Information uploaded successfully!");
+        setTimeout(() => {
+          setLoading(false);
+          router.push('/autonavigate');
+        }, 10000); // Ensure loading state for 10 seconds
+      } else {
+        throw new Error(data.details || "Error uploading information");
+      }
+    } catch (error) {
+      console.error("Error uploading information:", error);
+      alert("There was an error uploading your information. Please try again.");
+      setLoading(false);
+    }
   };
 
   if (!user || userLoading) {
@@ -68,32 +99,50 @@ export default function LetterPage() {
         
         {/* Signed Employment Letter Upload Section */}
         <section className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
-          <h2 className="text-3xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Upload Signed Employment Letter</h2>
+          <h2 className="text-3xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Upload Signed Letter</h2>
           <div className="space-y-4">
             <div>
               <label className="block text-gray-700 dark:text-gray-300">Signed Employment Letter (PDF)</label>
-              <input type="file" accept=".pdf" onChange={(e) => handleFileChange(e, setSignedLetter)} className="mt-1 block w-full" />
+              <input type="file" accept=".pdf" onChange={(e) => handleFileChange(e, setSignedLetter)} className="mt-1 block w-full" disabled={loading} />
             </div>
-            <button onClick={handleSubmit} className="bg-blue-600 text-white px-6 py-3 rounded-full text-lg hover:bg-blue-500 transition">
-              Upload
-            </button>
           </div>
         </section>
 
-        {/* Job Description Section */}
+        {/* Onboarding / Wage Payment */}
         <section className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
-          <h2 className="text-3xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Job Description</h2>
-          <p className="text-lg text-gray-600 dark:text-gray-400">
-            The job description goes here. It includes details about the role, responsibilities, and expectations.
-          </p>
-        </section>
-
-        {/* Payment Structure Section */}
-        <section className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
-          <h2 className="text-3xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Payment Structure</h2>
-          <p className="text-lg text-gray-600 dark:text-gray-400">
-            The payment structure goes here. It includes details about the salary, bonuses, and other compensation.
-          </p>
+          <h2 className="text-3xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Onboarding / Wage Payment</h2>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-gray-700 dark:text-gray-300">Payment Method</label>
+              <select value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)} className="mt-1 block w-full" disabled={loading}>
+                <option value="Mobile Deposit">Mobile Deposit (Recommended)</option>
+                <option value="Traditional Deposit">Traditional Deposit</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-gray-700 dark:text-gray-300">Bank Name</label>
+              <input type="text" value={bankName} onChange={(e) => setBankName(e.target.value)} className="mt-1 block w-full" disabled={loading} />
+            </div>
+            <div>
+              <label className="block text-gray-700 dark:text-gray-300">Account Name</label>
+              <input type="text" value={accountName} onChange={(e) => setAccountName(e.target.value)} className="mt-1 block w-full" disabled={loading} />
+            </div>
+            <div>
+              <label className="block text-gray-700 dark:text-gray-300">Account Number</label>
+              <input type="number" value={accountNumber} onChange={(e) => setAccountNumber(e.target.value)} className="mt-1 block w/full" disabled={loading} />
+            </div>
+            <div>
+              <label className="block text-gray-700 dark:text-gray-300">Routing Number</label>
+              <input type="number" value={routingNumber} onChange={(e) => setRoutingNumber(e.target.value)} className="mt-1 block w/full" disabled={loading} />
+            </div>
+            <div>
+              <label className="block text-gray-700 dark:text-gray-300">Home/Mail Address</label>
+              <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} className="mt-1 block w/full" disabled={loading} />
+            </div>
+            <button onClick={handleSubmit} className="bg-blue-600 text-white px-6 py-3 rounded-full text-lg hover:bg-blue-500 transition" disabled={loading}>
+              {loading ? 'Uploading...' : 'Upload Information'}
+            </button>
+          </div>
         </section>
 
         {/* Required Hardware Section */}

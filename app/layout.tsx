@@ -2,7 +2,7 @@
 
 // This is a server component
 export const metadata = {
-  title: 'Rediate Resources',
+  title: 'Radiate Resources',
   description: 'Support for individuals and small businesses during the great U.S recession.',
 };
 

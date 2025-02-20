@@ -30,6 +30,7 @@ export default function Questions() {
   ]);
   const [timeLeft, setTimeLeft] = useState(15 * 60); // 15 minutes in seconds
   const [email, setEmail] = useState('');
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (view === 'questions' && timeLeft > 0) {
@@ -67,6 +68,7 @@ export default function Questions() {
   };
 
   const handleSubmit = () => {
+    setLoading(true);
     const answers = questions.map(q => ({ question: q.question, answer: q.answer }));
     let payload = new URLSearchParams();
     payload.append("action", "submitAnswers");
@@ -79,7 +81,10 @@ export default function Questions() {
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: payload.toString()
     }).then(() => {
-      router.push('/autonavigate');
+      setTimeout(() => {
+        setLoading(false);
+        router.push('/autonavigate');
+      }, 10000); // Ensure loading state for 10 seconds
     });
   };
 
@@ -133,11 +138,12 @@ export default function Questions() {
                     newQuestions[index].answer = e.target.value;
                     setQuestions(newQuestions);
                   }}
+                  disabled={loading} // Disable textarea when loading
                 />
               </div>
             ))}
-            <button onClick={handleSubmit} className="bg-blue-600 text-white px-6 py-3 rounded-full text-lg hover:bg-blue-500 transition">
-              Submit
+            <button onClick={handleSubmit} className="bg-blue-600 text-white px-6 py-3 rounded-full text-lg hover:bg-blue-500 transition" disabled={loading}>
+              {loading ? 'Submitting...' : 'Submit'}
             </button>
           </div>
         </section>
