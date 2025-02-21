@@ -1,20 +1,8 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { User } from './types'; // Import the User interface
 
 const APP_SCRIPT_USER_URL = "https://script.google.com/macros/s/AKfycbwXIfuadHykMFrMdPPLLP7y0pm4oZ8TJUnM9SMmDp9BkaVLGu9jupU-CuW8Id-Mm1ylxg/exec?sheetname=user";
-
-interface User {
-  userId: string;
-  fullName: string;
-  phoneNumber: string;
-  position: string;
-  route: string;
-  titleStatus: string;
-  messageStatus: string;
-  warningStatus: string;
-  userFolderId: string;
-  admin: string; // Add admin field
-}
 
 interface UserContextProps {
   user: User | null;
@@ -22,7 +10,7 @@ interface UserContextProps {
   loading: boolean;
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
   setUsers: React.Dispatch<React.SetStateAction<User[]>>;
-  fetchAllUsers: () => Promise<void>; // Add fetchAllUsers to the interface
+  fetchAllUsers: () => Promise<void>;
 }
 
 const UserContext = createContext<UserContextProps>({ user: null, users: [], loading: true, setUser: () => {}, setUsers: () => {}, fetchAllUsers: async () => {} });

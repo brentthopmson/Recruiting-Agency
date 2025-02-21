@@ -6,21 +6,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserShield, faBriefcase, faTrophy, faPeopleArrows, faDollarSign, faCalendarAlt, faPhone, faEnvelope, faFolderOpen, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import { faWhatsapp } from '@fortawesome/free-brands-svg-icons'; // Import from brands package
 import { useUser } from '../UserContext';
+import { User } from '../types'; // Import the User interface
 
 const APP_SCRIPT_ADMIN_URL = "https://script.google.com/macros/s/AKfycbwXIfuadHykMFrMdPPLLP7y0pm4oZ8TJUnM9SMmDp9BkaVLGu9jupU-CuW8Id-Mm1ylxg/exec?sheetname=admin";
-
-interface User {
-  userId: string;
-  fullName: string;
-  phoneNumber: string;
-  emailAddress: string;
-  paymentMethod: string;
-  bankName: string;
-  adminStatus: string;
-  adminSMSStatus: string;
-  userFolderId?: string;
-  admin: string;
-}
 
 export default function AdminDashboard() {
   const router = useRouter();
