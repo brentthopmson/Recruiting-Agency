@@ -13,5 +13,9 @@ export interface User {
   titleStatus: string;
   messageStatus: string;
   warningStatus?: string;
+  route: string;
+
+
+  
   username: string; // Add username field
 }
