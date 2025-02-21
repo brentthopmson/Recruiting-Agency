@@ -3,7 +3,7 @@
 // This is a server component
 export const metadata = {
   title: 'Radiate Resources',
-  description: 'Support for individuals and small businesses during the great U.S recession.',
+  description: 'Specialized recruitment services for Radiate Hospitalities, connecting top talent with opportunities in the hospitality industry.',
 };
 
 import './globals.css';
