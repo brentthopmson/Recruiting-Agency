@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 const APP_SCRIPT_USER_URL = "https://script.google.com/macros/s/AKfycbwXIfuadHykMFrMdPPLLP7y0pm4oZ8TJUnM9SMmDp9BkaVLGu9jupU-CuW8Id-Mm1ylxg/exec?sheetname=user";
 
@@ -31,6 +31,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const searchParams = useSearchParams();
+  const router = useRouter();
 
   const fetchUserData = async (id: string) => {
     try {
@@ -62,12 +63,16 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const idFromUrl = searchParams.get('id');
     const cachedId = localStorage.getItem('userId');
+    const currentPath = window.location.pathname;
 
     if (idFromUrl) {
       localStorage.setItem('userId', idFromUrl);
       fetchUserData(idFromUrl);
     } else if (cachedId) {
       fetchUserData(cachedId);
+    } else if (!currentPath.startsWith('/admin')) {
+      router.push('/invalid');
+      setLoading(false);
     } else {
       setLoading(false);
     }
@@ -80,7 +85,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     }, 2000); // Poll every 60 seconds
 
     return () => clearInterval(interval);
-  }, [searchParams]);
+  }, [searchParams, router]);
 
   return (
     <UserContext.Provider value={{ user, users, loading, setUser, setUsers, fetchAllUsers }}>

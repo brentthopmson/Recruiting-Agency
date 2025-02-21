@@ -25,12 +25,15 @@ export default function AutoNavigatePage() {
   };
 
   useEffect(() => {
-    if (user?.userId) {
+    const userId = sessionStorage.getItem("userId");
+    if (userId) {
       setTimeout(() => {
-        fetchUserData(user.userId);
+        fetchUserData(userId);
       }, 10000); // Wait for 10 seconds before fetching data
+    } else {
+      router.push('/invalid');
     }
-  }, [user?.userId]);
+  }, []);
 
   useEffect(() => {
     if (!userLoading) {

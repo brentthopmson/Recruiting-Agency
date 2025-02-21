@@ -35,8 +35,8 @@ export default function RootLayout({
     router.push('/');
   };
 
-  // Conditionally render header and footer if the pathname is not '/account'
-  const shouldShowHeaderFooter = pathname !== '/account';
+  // Conditionally render header and footer if the pathname is not '/account' or '/invalid'
+  const shouldShowHeaderFooter = pathname !== '/account' && pathname !== '/invalid';
 
   return (
     <html lang="en">
