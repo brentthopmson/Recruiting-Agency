@@ -9,11 +9,24 @@ import { useUser } from '../UserContext';
 
 const APP_SCRIPT_ADMIN_URL = "https://script.google.com/macros/s/AKfycbwXIfuadHykMFrMdPPLLP7y0pm4oZ8TJUnM9SMmDp9BkaVLGu9jupU-CuW8Id-Mm1ylxg/exec?sheetname=admin";
 
+interface User {
+  userId: string;
+  fullName: string;
+  phoneNumber: string;
+  emailAddress: string;
+  paymentMethod: string;
+  bankName: string;
+  adminStatus: string;
+  adminSMSStatus: string;
+  userFolderId?: string;
+  admin: string;
+}
+
 export default function AdminDashboard() {
   const router = useRouter();
   const { users: allUsers, loading: userLoading, fetchAllUsers } = useUser();
-  const [admin, setAdmin] = useState(null);
-  const [users, setUsers] = useState([]);
+  const [admin, setAdmin] = useState<User | null>(null);
+  const [users, setUsers] = useState<User[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [loggedInAdmin, setLoggedInAdmin] = useState("");
 
@@ -36,26 +49,26 @@ export default function AdminDashboard() {
     }
   }, [allUsers]);
 
-  const fetchAdminData = async (adminUsername) => {
+  const fetchAdminData = async (adminUsername: string) => {
     try {
       const response = await fetch(APP_SCRIPT_ADMIN_URL);
       const data = await response.json();
-      const adminData = data.find(admin => admin.username === adminUsername);
+      const adminData = data.find((admin: any) => admin.username === adminUsername);
       setAdmin(adminData);
     } catch (error) {
       console.error("Error fetching admin data:", error);
     }
   };
 
-  const handleLogin = async (event) => {
+  const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const username = event.target.username.value.trim();
-    const password = event.target.password.value.trim();
+    const username = (event.target as any).username.value.trim();
+    const password = (event.target as any).password.value.trim();
 
     try {
       const response = await fetch(APP_SCRIPT_ADMIN_URL);
       const data = await response.json();
-      const admin = data.find(admin => admin.username === username && admin.password === password);
+      const admin = data.find((admin: any) => admin.username === username && admin.password === password);
       if (admin) {
         sessionStorage.setItem("loggedInAdmin", username);
         setLoggedInAdmin(username);
@@ -77,7 +90,7 @@ export default function AdminDashboard() {
     router.push('/');
   };
 
-  const handleSearch = (event) => {
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
   };
 
