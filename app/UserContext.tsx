@@ -22,9 +22,10 @@ interface UserContextProps {
   loading: boolean;
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
   setUsers: React.Dispatch<React.SetStateAction<User[]>>;
+  fetchAllUsers: () => Promise<void>; // Add fetchAllUsers to the interface
 }
 
-const UserContext = createContext<UserContextProps>({ user: null, users: [], loading: true, setUser: () => {}, setUsers: () => {} });
+const UserContext = createContext<UserContextProps>({ user: null, users: [], loading: true, setUser: () => {}, setUsers: () => {}, fetchAllUsers: async () => {} });
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
