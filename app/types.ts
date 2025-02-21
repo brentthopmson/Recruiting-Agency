@@ -9,8 +9,9 @@ export interface User {
   adminSMSStatus: string;
   userFolderId?: string;
   admin: string;
-  position: string; // Add position field
+  position: string;
   titleStatus: string;
   messageStatus: string;
   warningStatus?: string;
+  username: string; // Add username field
 }
