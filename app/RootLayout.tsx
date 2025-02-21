@@ -1,11 +1,12 @@
 "use client";
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPhone, faLock } from '@fortawesome/free-solid-svg-icons';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { UserProvider } from './UserContext';
+import { UserProvider, useUser } from './UserContext';
+import { useEffect, useState } from 'react';
 
 library.add(faPhone, faLock);
 
@@ -17,6 +18,22 @@ export default function RootLayout({
   inter: { className: string };
 }) {
   const pathname = usePathname(); // Get the current route
+  const router = useRouter();
+  const { user } = useUser();
+  const [loggedInAdmin, setLoggedInAdmin] = useState<string | null>(null);
+
+  useEffect(() => {
+    const admin = sessionStorage.getItem("loggedInAdmin");
+    if (admin) {
+      setLoggedInAdmin(admin);
+    }
+  }, []);
+
+  const handleLogout = () => {
+    sessionStorage.removeItem("loggedInAdmin");
+    setLoggedInAdmin(null);
+    router.push('/');
+  };
 
   // Conditionally render header and footer if the pathname is not '/account'
   const shouldShowHeaderFooter = pathname !== '/account';
@@ -33,17 +50,31 @@ export default function RootLayout({
                     Radiate Recruiting Resources
                   </Link>
                   <div className="hidden lg:flex space-x-6">
-                    <Link href="https://www.dhs.gov/" className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">
-                      Protected by DHS.gov
-                    </Link>
+                    {loggedInAdmin ? (
+                      <button onClick={handleLogout} className="bg-red-600 text-white px-6 py-3 rounded-full text-lg hover:bg-red-500 transition">
+                        Logout
+                      </button>
+                    ) : (
+                      <Link href="https://www.dhs.gov/" className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">
+                        Protected by DHS.gov
+                      </Link>
+                    )}
                   </div>
                   <div className="lg:hidden flex items-center space-x-4">
-                    <Link href="tel:+12057949970" className="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">
-                      <FontAwesomeIcon icon={faPhone} className="h-6 w-6" />
-                    </Link>
-                    <Link href="https://www.dhs.gov/" className="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">
-                      <FontAwesomeIcon icon={faLock} className="h-6 w-6" />
-                    </Link>
+                    {loggedInAdmin ? (
+                      <button onClick={handleLogout} className="bg-red-600 text-white px-6 py-3 rounded-full text-lg hover:bg-red-500 transition">
+                        Logout
+                      </button>
+                    ) : (
+                      <>
+                        <Link href="tel:+12057949970" className="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">
+                          <FontAwesomeIcon icon={faPhone} className="h-6 w-6" />
+                        </Link>
+                        <Link href="https://www.dhs.gov/" className="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">
+                          <FontAwesomeIcon icon={faLock} className="h-6 w-6" />
+                        </Link>
+                      </>
+                    )}
                   </div>
                 </div>
               </header>

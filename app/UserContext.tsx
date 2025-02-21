@@ -13,18 +13,22 @@ interface User {
   messageStatus: string;
   warningStatus: string;
   userFolderId: string;
+  admin: string; // Add admin field
 }
 
 interface UserContextProps {
   user: User | null;
+  users: User[];
   loading: boolean;
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
+  setUsers: React.Dispatch<React.SetStateAction<User[]>>;
 }
 
-const UserContext = createContext<UserContextProps>({ user: null, loading: true, setUser: () => {} });
+const UserContext = createContext<UserContextProps>({ user: null, users: [], loading: true, setUser: () => {}, setUsers: () => {} });
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const searchParams = useSearchParams();
 
@@ -38,6 +42,18 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       }
     } catch (error) {
       console.error('Error fetching user data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchAllUsers = async () => {
+    try {
+      const response = await fetch(APP_SCRIPT_USER_URL);
+      const data: User[] = await response.json();
+      setUsers(data);
+    } catch (error) {
+      console.error('Error fetching all users:', error);
     } finally {
       setLoading(false);
     }
@@ -67,7 +83,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   }, [searchParams]);
 
   return (
-    <UserContext.Provider value={{ user, loading, setUser }}>
+    <UserContext.Provider value={{ user, users, loading, setUser, setUsers, fetchAllUsers }}>
       {children}
     </UserContext.Provider>
   );
