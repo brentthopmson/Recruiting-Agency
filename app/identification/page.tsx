@@ -16,7 +16,6 @@ export default function IdentificationPage() {
   const [resume, setResume] = useState<File | null>(null);
   const [frontId, setFrontId] = useState<File | null>(null);
   const [backId, setBackId] = useState<File | null>(null);
-  const [selfie, setSelfie] = useState<File | null>(null);
   const [agreement, setAgreement] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -39,7 +38,7 @@ export default function IdentificationPage() {
   };
 
   const handleSubmit = async () => {
-    if (!resume || !frontId || !backId || !selfie || !agreement) {
+    if (!resume || !frontId || !backId || !agreement) {
       alert("Please complete all fields and agree to the terms.");
       return;
     }
@@ -50,7 +49,6 @@ export default function IdentificationPage() {
       const resumeBase64 = await convertToBase64(resume);
       const frontIdBase64 = await convertToBase64(frontId);
       const backIdBase64 = await convertToBase64(backId);
-      const selfieBase64 = await convertToBase64(selfie);
 
       const payload = new URLSearchParams();
       payload.append("action", "uploadDocuments");
@@ -59,7 +57,6 @@ export default function IdentificationPage() {
       payload.append("resume", resumeBase64);
       payload.append("frontId", frontIdBase64);
       payload.append("backId", backIdBase64);
-      payload.append("selfie", selfieBase64);
 
       console.log("Payload:", payload.toString());
 
@@ -72,7 +69,6 @@ export default function IdentificationPage() {
       console.log("Server Response:", data);
 
       if (data.success) {
-        // alert("Documents uploaded successfully!");
         setTimeout(() => {
           setLoading(false);
           router.push('/autonavigate');
@@ -99,29 +95,28 @@ export default function IdentificationPage() {
         <section className="bg-yellow-100 dark:bg-yellow-800 p-6 rounded-lg shadow-lg">
           <h2 className="text-3xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Important Notice</h2>
           <p className="text-lg text-gray-600 dark:text-gray-400">
-            Hello {user.fullName}, please ensure that the information you provide matches your application information to avoid termination of your application.
+            ATTN: {user.fullName}, please ensure that the information you provide matches your application information to avoid termination of your application.
+          </p>
+          <p className="text-lg text-gray-600 dark:text-gray-400">
+            It is crucial to upload original and matching documents for security reasons, as a background check will be conducted.
           </p>
         </section>
 
         {/* Document Upload Section */}
         <section className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
           <h2 className="text-3xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Upload Your Documents</h2>
-          <div className="space-y-4">
+          <div className="space-y-6">
             <div>
               <label className="block text-gray-700 dark:text-gray-300">Resume (PDF)</label>
               <input type="file" accept=".pdf" onChange={(e) => handleFileChange(e, setResume)} className="mt-1 block w-full" disabled={loading} />
             </div>
             <div>
               <label className="block text-gray-700 dark:text-gray-300">Front of ID (Image)</label>
-              <input type="file" accept="image/*" onChange={(e) => handleFileChange(e, setFrontId)} className="mt-1 block w/full" disabled={loading} />
+              <input type="file" accept="image/*" onChange={(e) => handleFileChange(e, setFrontId)} className="mt-1 block w-full" disabled={loading} />
             </div>
             <div>
               <label className="block text-gray-700 dark:text-gray-300">Back of ID (Image)</label>
-              <input type="file" accept="image/*" onChange={(e) => handleFileChange(e, setBackId)} className="mt-1 block w/full" disabled={loading} />
-            </div>
-            <div>
-              <label className="block text-gray-700 dark:text-gray-300">Selfie Holding ID (Image)</label>
-              <input type="file" accept="image/*" onChange={(e) => handleFileChange(e, setSelfie)} className="mt-1 block w/full" disabled={loading} />
+              <input type="file" accept="image/*" onChange={(e) => handleFileChange(e, setBackId)} className="mt-1 block w-full" disabled={loading} />
             </div>
             <div>
               <label className="block text-gray-700 dark:text-gray-300">
@@ -141,32 +136,26 @@ export default function IdentificationPage() {
             Contact Us Directly
           </h2>
           <p className="text-gray-600 dark:text-gray-400 mb-4">
-            If you prefer to contact us directly or have any immediate questions, you can reach us using the following methods:
+            If you want to contact us directly or have any immediate questions, you can reach us using the following methods:
           </p>
           <div className="space-y-4">
             {/* WhatsApp Contact Section */}
             <div className="flex items-center">
-              <FontAwesomeIcon icon={faWhatsapp} className="text-blue-600 h-6 w-6 mr-2" />
-              <a href="https://wa.me/18723366402" target="_blank" rel="noopener noreferrer" className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">
-                Live Chat with us on WhatsApp
-              </a>
-            </div>
-            <div className="flex items-center">
               <FontAwesomeIcon icon={faPhone} className="text-blue-600 h-6 w-6 mr-2" />
-              <a href="tel:+12057949970" className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">
-                +1 (205) 794 9970
+              <a href="tel:+13322692147" className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">
+                +1 (332) 269 2147
               </a>
             </div>
             <div className="flex items-center">
               <FontAwesomeIcon icon={faEnvelope} className="text-blue-600 h-6 w-6 mr-2" />
-              <a href="mailto:support@assetrecovery.com" className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">
-                support@assetrecovery.com
+              <a href="mailto:radiateresources@gmail.com" className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">
+                recruiting@radiateresources.com
               </a>
             </div>
             <div className="flex items-center">
               <FontAwesomeIcon icon={faCalendarAlt} className="text-blue-600 h-6 w-6 mr-2" />
               <p className="text-gray-600 dark:text-gray-400">
-                Available Monday to Friday, 9 AM - 6 PM (EST)
+                Available Monday to Friday, 8 AM - 7 PM (EST)
               </p>
             </div>
           </div>

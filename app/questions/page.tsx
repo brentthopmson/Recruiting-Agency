@@ -17,16 +17,16 @@ export default function Questions() {
   const { user, loading: userLoading } = useUser();
   const [view, setView] = useState<'info' | 'questions'>('info');
   const [questions, setQuestions] = useState<Question[]>([
-    { id: 1, question: 'Question 1', answer: '' },
-    { id: 2, question: 'Question 2', answer: '' },
-    { id: 3, question: 'Question 3', answer: '' },
-    { id: 4, question: 'Question 4', answer: '' },
-    { id: 5, question: 'Question 5', answer: '' },
-    { id: 6, question: 'Question 6', answer: '' },
-    { id: 7, question: 'Question 7', answer: '' },
-    { id: 8, question: 'Question 8', answer: '' },
-    { id: 9, question: 'Question 9', answer: '' },
-    { id: 10, question: 'Question 10', answer: '' },
+    { id: 1, question: '1. Describe a time when you diffused an angry customer and solved their problem.', answer: '' },
+    { id: 2, question: '2. How do you show a client you are listening over the phone? Provide examples.', answer: '' },
+    { id: 3, question: '3. What types of calls do you expect to handle here? How would you handle these issues?', answer: '' },
+    { id: 4, question: '4. How would you handle an unreasonable request from a customer? Provide examples using experience.', answer: '' },
+    { id: 5, question: '5. What do you do to ensure you meet performance standards? How do you balance that with service quality?', answer: '' },
+    { id: 6, question: '6. If you were going to miss a deadline, how would you communicate it?', answer: '' },
+    { id: 7, question: '7. How often are you online and available via email, Skype, or other communication channels?', answer: '' },
+    { id: 8, question: '8. Do you have communication preferences? Do you work better with phone calls, having things in writing, etc?', answer: '' },
+    { id: 9, question: '9. Describe a time when you had to learn a new tool or system quickly. How did you approach it?', answer: '' },
+    { id: 10, question: '10. How do you handle multiple tasks or priorities? Provide examples from your experience.', answer: '' },
   ]);
   const [timeLeft, setTimeLeft] = useState(15 * 60); // 15 minutes in seconds
   const [email, setEmail] = useState('');
