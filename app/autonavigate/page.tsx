@@ -30,8 +30,6 @@ export default function AutoNavigatePage() {
       setTimeout(() => {
         fetchUserData(userId);
       }, 10000); // Wait for 10 seconds before fetching data
-    } else {
-      router.push('/invalid');
     }
   }, []);
 
