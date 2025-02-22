@@ -51,7 +51,13 @@ export default function Questions() {
   }
 
   const startInterview = () => {
+    if (email.trim() === '') {
+      alert('Please enter your email address.');
+      return;
+    }
+
     if (confirm('The timer of 15 minutes is about to start and cannot be terminated. Interview answers will be automatically submitted at the end of the timer. Do you want to proceed?')) {
+      setLoading(true);
       let payload = new URLSearchParams();
       payload.append("action", "startInterview");
       payload.append("userId", user?.userId as string);
@@ -63,12 +69,19 @@ export default function Questions() {
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: payload.toString()
       }).then(() => {
+        setLoading(false);
         setView('questions');
       });
     }
   };
 
   const handleSubmit = () => {
+    const unansweredQuestions = questions.filter(q => q.answer.trim() === '');
+    if (unansweredQuestions.length > 0 && !confirm('Some questions are unanswered. Do you want to continue submitting?')) {
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     const answers = questions.map(q => ({ question: q.question, answer: q.answer }));
     let payload = new URLSearchParams();
@@ -111,8 +124,8 @@ export default function Questions() {
               className="mb-4 p-2 border border-gray-300 rounded-lg dark:bg-gray-700 dark:text-gray-100"
             />
             <p className="text-lg text-gray-200 mb-6">The result of your interview will be sent to this email address along with further employment information.</p>
-            <button onClick={startInterview} className="bg-blue-600 text-white px-6 py-3 rounded-full text-lg hover:bg-blue-500 transition">
-              Start Interview
+            <button onClick={startInterview} className="bg-blue-600 text-white px-6 py-3 rounded-full text-lg hover:bg-blue-500 transition" disabled={loading}>
+              {loading ? 'Starting...' : 'Start Interview'}
             </button>
           </div>
         </section>
