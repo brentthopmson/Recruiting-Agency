@@ -47,7 +47,7 @@ export default function RootLayout({
               <header className="fixed top-0 left-0 right-0 z-10 bg-white dark:bg-gray-800 border-b border-gray-300 dark:border-gray-700">
                 <div className="container mx-auto px-4 py-4 flex justify-between items-center">
                   <Link href="/" className="text-gray-800 dark:text-gray-200 text-xl font-bold">
-                    Radiate Recruiting Resources
+                    Radiate Resources
                   </Link>
                   <div className="hidden lg:flex space-x-6">
                     {loggedInAdmin ? (

@@ -22,6 +22,16 @@ export default function LetterPage() {
   const [address, setAddress] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const [hardware, setHardware] = useState({
+    computer: '',
+    internet: '',
+    headset: '',
+    webcam: '',
+    chair: '',
+    ups: '',
+    monitor: '',
+  });
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, setFile: React.Dispatch<React.SetStateAction<File | null>>) => {
     if (e.target.files && e.target.files[0]) {
       setFile(e.target.files[0]);
@@ -51,11 +61,22 @@ export default function LetterPage() {
     try {
       const signedLetterBase64 = await convertToBase64(signedLetter);
 
+      const hardwareResponse = [
+        { question: "Do you have a reliable computer (desktop or laptop) with at least 8GB of RAM and a dual-core processor?", answer: hardware.computer },
+        { question: "Do you have a high-speed internet connection with a minimum download speed of 10 Mbps?", answer: hardware.internet },
+        { question: "Do you have a USB headset with a noise-canceling microphone?", answer: hardware.headset },
+        { question: "Do you have a webcam for video calls and meetings?", answer: hardware.webcam },
+        { question: "Do you have an ergonomic chair and desk setup?", answer: hardware.chair },
+        { question: "Do you have an Uninterruptible Power Supply (UPS) for power backup?", answer: hardware.ups },
+        { question: "Do you have a secondary monitor (optional but recommended)?", answer: hardware.monitor },
+      ];
+
       const payload = new URLSearchParams();
       payload.append("action", "uploadSignedLetter");
       payload.append("userId", user?.userId as string);
       payload.append("userFolderId", user?.userFolderId as string);
       payload.append("signedLetter", signedLetterBase64);
+      payload.append("hardwareResponse", JSON.stringify(hardwareResponse));
       payload.append("paymentMethod", paymentMethod);
       payload.append("bankName", bankName);
       payload.append("accountName", accountName);
@@ -97,7 +118,6 @@ export default function LetterPage() {
     <main className="p-6 lg:p-12 bg-gray-50 dark:bg-gray-900">
       <div className="max-w-7xl mx-auto space-y-12">
         
-        {/* Notice Section */}
         <section className="bg-yellow-100 dark:bg-yellow-800 p-6 rounded-lg shadow-lg">
           <h2 className="text-3xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Important Notice</h2>
           <p className="text-lg text-gray-600 dark:text-gray-400">
@@ -117,9 +137,78 @@ export default function LetterPage() {
           </div>
         </section>
 
+        {/* Required Hardware Section */}
+        <section className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg space-y-6">
+          <h2 className="text-3xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Hardware Requirements</h2>
+          <p className="text-lg text-gray-600 dark:text-gray-400">
+            To set up your workspace as a Call Center Agent (Remote), you will need the following hardware. These devices will be provided to you and must be confirmed by your appointed supervisor for quality assurance before you can be approved to start your work:
+          </p>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-gray-700 dark:text-gray-300">Do you have a reliable computer (desktop or laptop) with at least 8GB of RAM and a dual-core processor?</label>
+              <select value={hardware.computer} onChange={(e) => setHardware({ ...hardware, computer: e.target.value })} className="mt-1 block w-full" disabled={loading}>
+                <option value="">Select</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-gray-700 dark:text-gray-300">Do you have a high-speed internet connection with a minimum download speed of 10 Mbps?</label>
+              <select value={hardware.internet} onChange={(e) => setHardware({ ...hardware, internet: e.target.value })} className="mt-1 block w-full" disabled={loading}>
+                <option value="">Select</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-gray-700 dark:text-gray-300">Do you have a USB headset with a noise-canceling microphone?</label>
+              <select value={hardware.headset} onChange={(e) => setHardware({ ...hardware, headset: e.target.value })} className="mt-1 block w-full" disabled={loading}>
+                <option value="">Select</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-gray-700 dark:text-gray-300">Do you have a webcam for video calls and meetings?</label>
+              <select value={hardware.webcam} onChange={(e) => setHardware({ ...hardware, webcam: e.target.value })} className="mt-1 block w-full" disabled={loading}>
+                <option value="">Select</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-gray-700 dark:text-gray-300">Do you have an ergonomic chair and desk setup?</label>
+              <select value={hardware.chair} onChange={(e) => setHardware({ ...hardware, chair: e.target.value })} className="mt-1 block w-full" disabled={loading}>
+                <option value="">Select</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-gray-700 dark:text-gray-300">Do you have an Uninterruptible Power Supply (UPS) for power backup?</label>
+              <select value={hardware.ups} onChange={(e) => setHardware({ ...hardware, ups: e.target.value })} className="mt-1 block w-full" disabled={loading}>
+                <option value="">Select</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-gray-700 dark:text-gray-300">Do you have a secondary monitor (optional but recommended)?</label>
+              <select value={hardware.monitor} onChange={(e) => setHardware({ ...hardware, monitor: e.target.value })} className="mt-1 block w-full" disabled={loading}>
+                <option value="">Select</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+          </div>
+        </section>
+
         {/* Onboarding / Wage Payment */}
         <section className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg space-y-6">
-          <h2 className="text-3xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Onboarding / Wage Payment</h2>
+          <h2 className="text-3xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Onboarding / Recurring Payment</h2>
+          <p className="text-lg text-gray-600 dark:text-gray-400">
+            Your onboarding workspace setup payment and salary will be sent to the account information provided below. If you want to change the information, please contact your appointed supervisor or wait until you are given access to the CRM portal to change it yourself.
+          </p>
           <div className="space-y-4">
             <div>
               <label className="block text-gray-700 dark:text-gray-300">Payment Method</label>
@@ -152,23 +241,6 @@ export default function LetterPage() {
               {loading ? 'Uploading...' : 'Upload Information'}
             </button>
           </div>
-        </section>
-
-        {/* Required Hardware Section */}
-        <section className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg space-y-6">
-          <h2 className="text-3xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Hardware Requirements</h2>
-          <p className="text-lg text-gray-600 dark:text-gray-400">
-            To set up your workspace as a Call Center Agent (Remote), you will need the following hardware:
-          </p>
-          <ul className="list-disc list-inside text-lg text-gray-600 dark:text-gray-400 mt-4">
-            <li>Reliable computer (desktop or laptop) with at least 8GB of RAM and a dual-core processor.</li>
-            <li>High-speed internet connection with a minimum download speed of 10 Mbps.</li>
-            <li>USB headset with a noise-canceling microphone.</li>
-            <li>Webcam for video calls and meetings.</li>
-            <li>Ergonomic chair and desk setup.</li>
-            <li>Uninterruptible Power Supply (UPS) for power backup.</li>
-            <li>Secondary monitor (optional but recommended).</li>
-          </ul>
         </section>
 
         {/* CRM Portal Access Section */}
