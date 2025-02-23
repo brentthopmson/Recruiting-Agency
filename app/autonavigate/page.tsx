@@ -48,7 +48,7 @@ export default function AutoNavigatePage() {
       <main className="flex flex-col items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900">
         <div className="text-center">
           <div className="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full text-blue-600" role="status">
-            <span className="visually-hidden">Loading...</span>
+            <span className="visually-hidden">...</span>
           </div>
           <p className="text-lg text-gray-600 dark:text-gray-400 mt-4">Please wait while we navigate you to the appropriate page.</p>
         </div>
