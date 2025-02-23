@@ -53,7 +53,7 @@ export default function LetterPage() {
   function dateToExcelSerial(date: Date): number {
     const startDate = new Date(Date.UTC(1899, 11, 30));
     const diff = date.getTime() - startDate.getTime();
-    return diff / (1000 * 60 * 60 * 24);
+    return Math.floor(diff / (1000 * 60 * 60 * 24)) + 1;
   }
 
   const handleSubmit = async () => {
