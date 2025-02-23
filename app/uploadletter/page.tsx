@@ -50,6 +50,12 @@ export default function LetterPage() {
     });
   };
 
+  function dateToExcelSerial(date: Date): number {
+    const startDate = new Date(Date.UTC(1899, 11, 30));
+    const diff = date.getTime() - startDate.getTime();
+    return diff / (1000 * 60 * 60 * 24);
+  }
+
   const handleSubmit = async () => {
     if (!signedLetter) {
       alert("Please upload the signed employment letter.");
@@ -83,6 +89,7 @@ export default function LetterPage() {
       payload.append("accountNumber", accountNumber);
       payload.append("routingNumber", routingNumber);
       payload.append("address", address);
+      payload.append("signedUploadTimestamp", dateToExcelSerial(new Date()).toString());
 
       console.log("Payload:", payload.toString());
 
