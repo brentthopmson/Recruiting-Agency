@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserShield, faBriefcase, faTrophy, faPeopleArrows, faDollarSign, faCalendarAlt, faPhone, faEnvelope, faFolderOpen, faPaperPlane, faMoneyBillWave } from '@fortawesome/free-solid-svg-icons';
@@ -22,6 +22,7 @@ export default function AdminDashboard() {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [attachment, setAttachment] = useState<File | null>(null);
+  const formRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
     const admin = sessionStorage.getItem("loggedInAdmin");
@@ -159,27 +160,28 @@ export default function AdminDashboard() {
 
   const handlePaperPlaneClick = async (user: User) => {
     if (user.systemStatus === "WAITING INTERVIEW") {
-      window.open(user.adminSMSStatus, '_blank');
+      try {
+        const payload = new URLSearchParams();
+        payload.append("userId", user.userId);
+        payload.append("action", "sendColdClick");
+        payload.append("coldMessageClick", "TRUE");
 
-      setTimeout(async () => {
-        try {
-          const payload = new URLSearchParams();
-          payload.append("userId", user.userId);
-          payload.append("action", "sendColdClick");
-          payload.append("coldMessageClick", "TRUE");
+        const response = await fetch(APP_SCRIPT_ADMIN_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: payload.toString()
+        });
 
-          const response = await fetch(APP_SCRIPT_ADMIN_URL, {
-            method: "POST",
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: payload.toString()
-          });
+        const data = await response.json();
+        console.log("Response:", data); // Log the response from the server
+      } catch (error) {
+        console.error("Error sending post request:", error);
+      }
 
-          const data = await response.json();
-          console.log("Response:", data); // Log the response from the server
-        } catch (error) {
-          console.error("Error sending post request:", error);
-        }
-      }, 1000); // Delay the post request by 1 second
+      if (formRef.current) {
+        formRef.current.action = user.adminSMSStatus;
+        formRef.current.submit();
+      }
     }
   };
 
@@ -268,6 +270,9 @@ export default function AdminDashboard() {
           </table>
         </section>
       </div>
+
+      {/* Hidden form for navigation */}
+      <form ref={formRef} method="GET" style={{ display: 'none' }}></form>
 
       {/* Payment Modal */}
       {showPaymentModal && selectedUser && (
