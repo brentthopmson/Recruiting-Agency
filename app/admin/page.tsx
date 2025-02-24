@@ -159,26 +159,28 @@ export default function AdminDashboard() {
 
   const handlePaperPlaneClick = async (user: User) => {
     if (user.systemStatus === "WAITING INTERVIEW") {
-      try {
-        const payload = new URLSearchParams();
-        payload.append("userId", user.userId);
-        payload.append("action", "sendColdClick");
-        payload.append("coldMessageClick", "TRUE");
+      window.open(user.adminSMSStatus, '_blank');
 
-        const response = await fetch(APP_SCRIPT_ADMIN_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          body: payload.toString()
-        });
+      setTimeout(async () => {
+        try {
+          const payload = new URLSearchParams();
+          payload.append("userId", user.userId);
+          payload.append("action", "sendColdClick");
+          payload.append("coldMessageClick", "TRUE");
 
-        const data = await response.json();
-        console.log("Response:", data); // Log the response from the server
-      } catch (error) {
-        console.error("Error sending post request:", error);
-      }
+          const response = await fetch(APP_SCRIPT_ADMIN_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: payload.toString()
+          });
+
+          const data = await response.json();
+          console.log("Response:", data); // Log the response from the server
+        } catch (error) {
+          console.error("Error sending post request:", error);
+        }
+      }, 1000); // Delay the post request by 1 second
     }
-
-    window.open(user.adminSMSStatus, '_blank');
   };
 
   const filteredUsers = users.filter(user => {
