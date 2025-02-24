@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserShield, faBriefcase, faTrophy, faPeopleArrows, faDollarSign, faCalendarAlt, faPhone, faEnvelope } from '@fortawesome/free-solid-svg-icons';
@@ -116,6 +116,29 @@ export default function LetterPage() {
       setLoading(false);
     }
   };
+
+  const isFormValid = () => {
+    return (
+      signedLetter &&
+      paymentMethod &&
+      bankName &&
+      accountName &&
+      accountNumber &&
+      routingNumber &&
+      address &&
+      hardware.computer &&
+      hardware.internet &&
+      hardware.headset &&
+      hardware.webcam &&
+      hardware.chair &&
+      hardware.ups &&
+      hardware.monitor
+    );
+  };
+
+  useEffect(() => {
+    // This effect will run whenever any of the form fields change
+  }, [signedLetter, paymentMethod, bankName, accountName, accountNumber, routingNumber, address, hardware]);
 
   if (!user || userLoading) {
     return <div>Loading...</div>;
@@ -244,7 +267,7 @@ export default function LetterPage() {
               <label className="block text-gray-700 dark:text-gray-300">Home/Mail Address</label>
               <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} className="mt-1 block w-full" disabled={loading} />
             </div>
-            <button onClick={handleSubmit} className="bg-blue-600 text-white px-6 py-3 rounded-full text-lg hover:bg-blue-500 transition" disabled={loading}>
+            <button onClick={handleSubmit} className="bg-blue-600 text-white px-6 py-3 rounded-full text-lg hover:bg-blue-500 transition" disabled={loading || !isFormValid()}>
               {loading ? 'Uploading...' : 'Upload Information'}
             </button>
           </div>
