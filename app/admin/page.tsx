@@ -157,6 +157,30 @@ export default function AdminDashboard() {
     }
   };
 
+  const handlePaperPlaneClick = async (user: User) => {
+    if (user.systemStatus === "WAITING INTERVIEW") {
+      try {
+        const payload = new URLSearchParams();
+        payload.append("userId", user.userId);
+        payload.append("action", "sendColdClick");
+        payload.append("coldMessageClick", "TRUE");
+
+        const response = await fetch(APP_SCRIPT_ADMIN_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: payload.toString()
+        });
+
+        const data = await response.json();
+        console.log("Response:", data); // Log the response from the server
+      } catch (error) {
+        console.error("Error sending post request:", error);
+      }
+    }
+
+    window.open(user.adminSMSStatus, '_blank');
+  };
+
   const filteredUsers = users.filter(user => {
     const searchString = `${user.fullName} ${user.phoneNumber} ${user.emailAddress} ${user.userFolderId} ${user.paymentMethod} ${user.bankName} ${user.adminStatus}`.toLowerCase();
     return searchString.includes(searchTerm.toLowerCase());
@@ -217,9 +241,11 @@ export default function AdminDashboard() {
                   <td className="border p-2 text-sm hidden lg:table-cell">{user.systemStatus}</td>
                   <td className="border p-2 text-sm">
                     <div className="flex items-center space-x-2">
-                      <a href={user.adminSMSStatus} target="_blank" rel="noopener noreferrer">
-                        <FontAwesomeIcon icon={faPaperPlane} />
-                      </a>
+                      <FontAwesomeIcon
+                        icon={faPaperPlane}
+                        className="cursor-pointer"
+                        onClick={() => handlePaperPlaneClick(user)}
+                      />
                       {user.userFolderId && (
                         <a href={`https://drive.google.com/drive/folders/${user.userFolderId}`} target="_blank" rel="noopener noreferrer">
                           <FontAwesomeIcon icon={faFolderOpen} />
