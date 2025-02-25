@@ -218,17 +218,9 @@ export default function AdminDashboard() {
                   <td className="border p-2 text-sm hidden lg:table-cell">{user.systemStatus}</td>
                   <td className="border p-2 text-sm">
                     <div className="flex items-center space-x-2">
-                      {user.systemStatus === "WAITING INTERVIEW" ? (
-                        <a href={user.adminSMSStatus} target="_blank" rel="noopener noreferrer">
-                          <FontAwesomeIcon icon={faPaperPlane} className="cursor-pointer" />
-                        </a>
-                      ) : (
-                        <FontAwesomeIcon
-                          icon={faPaperPlane}
-                          className="cursor-pointer"
-                          onClick={() => handlePaperPlaneClick(user)}
-                        />
-                      )}
+                      <a href={user.adminSMSStatus} target="_blank" rel="noopener noreferrer">
+                        <FontAwesomeIcon icon={faPaperPlane} className="cursor-pointer" />
+                      </a>
                       {user.userFolderId && (
                         <a href={`https://drive.google.com/drive/folders/${user.userFolderId}`} target="_blank" rel="noopener noreferrer">
                           <FontAwesomeIcon icon={faFolderOpen} />
