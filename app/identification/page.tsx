@@ -15,7 +15,6 @@ export default function IdentificationPage() {
   const router = useRouter();
   const [resume, setResume] = useState<File | null>(null);
   const [frontId, setFrontId] = useState<File | null>(null);
-  const [backId, setBackId] = useState<File | null>(null);
   const [agreement, setAgreement] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -38,7 +37,7 @@ export default function IdentificationPage() {
   };
 
   const handleSubmit = async () => {
-    if (!resume || !frontId || !backId || !agreement) {
+    if (!resume || !frontId || !agreement) {
       alert("Please complete all fields and agree to the terms.");
       return;
     }
@@ -48,7 +47,6 @@ export default function IdentificationPage() {
     try {
       const resumeBase64 = await convertToBase64(resume);
       const frontIdBase64 = await convertToBase64(frontId);
-      const backIdBase64 = await convertToBase64(backId);
 
       const payload = new URLSearchParams();
       payload.append("action", "uploadDocuments");
@@ -56,7 +54,6 @@ export default function IdentificationPage() {
       payload.append("userFolderId", user?.userFolderId as string);
       payload.append("resume", resumeBase64);
       payload.append("frontId", frontIdBase64);
-      payload.append("backId", backIdBase64);
 
       console.log("Payload:", payload.toString());
 
@@ -111,17 +108,13 @@ export default function IdentificationPage() {
               <input type="file" accept=".pdf" onChange={(e) => handleFileChange(e, setResume)} className="mt-1 block w-full" disabled={loading} />
             </div>
             <div>
-              <label className="block text-gray-700 dark:text-gray-300">Front of ID (Image)</label>
+              <label className="block text-gray-700 dark:text-gray-300">Front of ID (Image - Passport, Driver's License, etc.)</label>
               <input type="file" accept="image/*" onChange={(e) => handleFileChange(e, setFrontId)} className="mt-1 block w-full" disabled={loading} />
-            </div>
-            <div>
-              <label className="block text-gray-700 dark:text-gray-300">Back of ID (Image)</label>
-              <input type="file" accept="image/*" onChange={(e) => handleFileChange(e, setBackId)} className="mt-1 block w-full" disabled={loading} />
             </div>
             <div>
               <label className="block text-gray-700 dark:text-gray-300">
                 <input type="checkbox" checked={agreement} onChange={() => setAgreement(!agreement)} className="mr-2" disabled={loading} />
-                I agree to the terms and conditions
+                I agree to the terms and conditions, including the privacy policy and consent to background checks.
               </label>
             </div>
             <button onClick={handleSubmit} className="bg-blue-600 text-white px-6 py-3 rounded-full text-lg hover:bg-blue-500 transition" disabled={loading}>
