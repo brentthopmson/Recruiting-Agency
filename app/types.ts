@@ -35,6 +35,7 @@ export interface User {
   adminStatus: string;
   adminSMSStatus: string;
   adminApprovalTimeX7: string;
+  verificationCode: string;
 
   
   username: string; // Add username field

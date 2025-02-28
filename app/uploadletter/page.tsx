@@ -14,12 +14,6 @@ export default function LetterPage() {
   const { user, loading: userLoading } = useUser();
   const router = useRouter();
   const [signedLetter, setSignedLetter] = useState<File | null>(null);
-  const [paymentMethod, setPaymentMethod] = useState('Mobile Deposit');
-  const [bankName, setBankName] = useState('');
-  const [accountName, setAccountName] = useState('');
-  const [accountNumber, setAccountNumber] = useState('');
-  const [routingNumber, setRoutingNumber] = useState('');
-  const [address, setAddress] = useState('');
   const [loading, setLoading] = useState(false);
 
   const [hardware, setHardware] = useState({
@@ -83,13 +77,6 @@ export default function LetterPage() {
       payload.append("userFolderId", user?.userFolderId as string);
       payload.append("signedLetter", signedLetterBase64);
       payload.append("hardwareResponse", JSON.stringify(hardwareResponse));
-      payload.append("paymentMethod", paymentMethod);
-      payload.append("bankName", bankName);
-      payload.append("accountName", accountName);
-      payload.append("accountNumber", accountNumber);
-      payload.append("routingNumber", routingNumber);
-      payload.append("address", address);
-      payload.append("signedUploadTimestamp", dateToExcelSerial(new Date()).toString());
 
       console.log("Payload:", payload.toString());
 
@@ -104,7 +91,7 @@ export default function LetterPage() {
       if (data.success) {
         // alert("Information uploaded successfully!");
         setTimeout(() => {
-          setLoading(false);
+          //setLoading(false);
           router.push('/autonavigate');
         }, 10000); // Ensure loading state for 10 seconds
       } else {
@@ -120,12 +107,6 @@ export default function LetterPage() {
   const isFormValid = () => {
     return (
       signedLetter &&
-      paymentMethod &&
-      bankName &&
-      accountName &&
-      accountNumber &&
-      routingNumber &&
-      address &&
       hardware.computer &&
       hardware.internet &&
       hardware.headset &&
@@ -138,7 +119,7 @@ export default function LetterPage() {
 
   useEffect(() => {
     // This effect will run whenever any of the form fields change
-  }, [signedLetter, paymentMethod, bankName, accountName, accountNumber, routingNumber, address, hardware]);
+  }, [signedLetter, hardware]);
 
   if (!user || userLoading) {
     return <div>Loading...</div>;
@@ -231,50 +212,13 @@ export default function LetterPage() {
               </select>
             </div>
           </div>
-        </section>
-
-        {/* Onboarding / Wage Payment */}
-        <section className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg space-y-6">
-          <h2 className="text-3xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Onboarding / Recurring Payment</h2>
-          <p className="text-lg text-gray-600 dark:text-gray-400">
-            Your onboarding workspace setup payment and salary will be sent to the account information provided below. If you want to change the information, please contact your appointed supervisor or wait until you are given access to the CRM portal to change it yourself.
-          </p>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-gray-700 dark:text-gray-300">Payment Method</label>
-              <select value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)} className="mt-1 block w-full" disabled={loading}>
-                <option value="Mobile Deposit">Mobile Deposit (Recommended)</option>
-                <option value="Traditional Deposit">Traditional Deposit</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-gray-700 dark:text-gray-300">Bank Name</label>
-              <input type="text" value={bankName} onChange={(e) => setBankName(e.target.value)} className="mt-1 block w-full" disabled={loading} />
-            </div>
-            <div>
-              <label className="block text-gray-700 dark:text-gray-300">Full Name on Account</label>
-              <input type="text" value={accountName} onChange={(e) => setAccountName(e.target.value)} className="mt-1 block w-full" disabled={loading} />
-            </div>
-            <div>
-              <label className="block text-gray-700 dark:text-gray-300">Account Number</label>
-              <input type="number" value={accountNumber} onChange={(e) => setAccountNumber(e.target.value)} className="mt-1 block w-full" disabled={loading} />
-            </div>
-            <div>
-              <label className="block text-gray-700 dark:text-gray-300">Routing Number</label>
-              <input type="number" value={routingNumber} onChange={(e) => setRoutingNumber(e.target.value)} className="mt-1 block w-full" disabled={loading} />
-            </div>
-            <div>
-              <label className="block text-gray-700 dark:text-gray-300">Home/Mail Address</label>
-              <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} className="mt-1 block w-full" disabled={loading} />
-            </div>
-            <button onClick={handleSubmit} className="bg-blue-600 text-white px-6 py-3 rounded-full text-lg hover:bg-blue-500 transition" disabled={loading || !isFormValid()}>
-              {loading ? 'Uploading...' : 'Upload Information'}
-            </button>
-          </div>
+          <button onClick={handleSubmit} className="bg-blue-600 text-white px-6 py-3 rounded-full text-lg hover:bg-blue-500 transition" disabled={loading || !isFormValid()}>
+            {loading ? 'Uploading...' : 'Upload Information'}
+          </button>
         </section>
 
         {/* CRM Portal Access Section */}
-        <section className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg space-y-6">
+         <section className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg space-y-6">
           <h2 className="text-3xl font-semibold text-gray-900 dark:text-gray-100 mb-4">CRM Portal Access</h2>
           <p className="text-lg text-gray-600 dark:text-gray-400">
             As a Call Center Agent, you will have access to our CRM portal to manage customer interactions and records. The CRM portal allows you to:
@@ -308,7 +252,7 @@ export default function LetterPage() {
                 +1 (332) 269 2147
               </a>
             </div>
-            <div className="flex items-center">
+             <div className="flex items-center">
               <FontAwesomeIcon icon={faEnvelope} className="text-blue-600 h-6 w-6 mr-2" />
               <a href="mailto:radiateresources@gmail.com" className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">
                 recruiting@radiateresources.com
