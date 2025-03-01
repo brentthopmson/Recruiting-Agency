@@ -10,16 +10,16 @@ export default function CompletedPage() {
   const { user, loading: userLoading } = useUser();
   const router = useRouter();
 
+  useEffect(() => {
+    if (!user && !userLoading) {
+      router.push('/invalid');
+    }
+  }, [user, userLoading, router]);
+
 
   if (userLoading) {
     return <div>Loading...</div>;
   }
-
-  useEffect(() => {
-    if (!user) {
-      router.push('/invalid');
-    }
-  }, [user, router]);
 
   if (!user) {
     return null;
