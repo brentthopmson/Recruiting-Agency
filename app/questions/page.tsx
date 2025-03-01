@@ -100,7 +100,7 @@ export default function Questions() {
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: payload.toString()
       }).then(() => {
-        setLoading(false);
+        //setLoading(false);
         setView('questions');
       });
     }
