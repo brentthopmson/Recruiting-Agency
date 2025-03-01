@@ -58,7 +58,7 @@ export default function VerifySupervisorPage() {
       setError("An unexpected error occurred. Please try again.");
       console.error(e);
     } finally {
-      setLoading(false);
+      //setLoading(false);
     }
   };
 

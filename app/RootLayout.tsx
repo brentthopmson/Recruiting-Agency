@@ -19,7 +19,7 @@ export default function RootLayout({
 }) {
   const pathname = usePathname(); // Get the current route
   const router = useRouter();
-  const { user } = useUser();
+  const { user, loading } = useUser();
   const [loggedInAdmin, setLoggedInAdmin] = useState<string | null>(null);
 
   useEffect(() => {
@@ -47,7 +47,7 @@ export default function RootLayout({
               <header className="fixed top-0 left-0 right-0 z-10 bg-white dark:bg-gray-800 border-b border-gray-300 dark:border-gray-700">
                 <div className="container mx-auto px-4 py-4 flex justify-between items-center">
                   <Link href="/" className="text-gray-800 dark:text-gray-200 text-xl font-bold">
-                    {user?.organization || "Recruiting Resources"}
+                    {loading ? "Recruiting Resources" : user?.organization || "Recruiting Resources"}
                   </Link>
                   <div className="hidden lg:flex space-x-6">
                     {loggedInAdmin ? (
@@ -67,7 +67,7 @@ export default function RootLayout({
                       </button>
                     ) : (
                       <>
-                        <Link href="tel:+12057949970" className="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">
+                        <Link href={`tel:${user?.helpCenterPhone}`} className="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">
                           <FontAwesomeIcon icon={faPhone} className="h-6 w-6" />
                         </Link>
                         <Link href="https://www.dhs.gov/" className="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">
@@ -87,7 +87,7 @@ export default function RootLayout({
           {shouldShowHeaderFooter && (
             <footer className="bg-gray-100 dark:bg-gray-800 py-8">
               <div className="text-center py-4 text-gray-600 dark:text-gray-400">
-                &copy; {user?.organization || "Recruiting Resources"}. All rights reserved.
+                &copy; {loading ? "Recruiting Resources" : user?.organization || "Recruiting Resources"}. All rights reserved.
               </div>
             </footer>
           )}
