@@ -13,6 +13,12 @@ export default function VerifySupervisorPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    if (!user && !userLoading) {
+      router.push('/invalid');
+    }
+  }, [user, router, userLoading]);
+
   const handleVerification = async () => {
     if (!user) {
       setError("User data not available.");
@@ -48,7 +54,6 @@ export default function VerifySupervisorPage() {
 
       if (data.success) {
         setTimeout(() => {
-          //setLoading(false);
           router.push('/autonavigate');
         }, 10000);
       } else {
@@ -58,7 +63,7 @@ export default function VerifySupervisorPage() {
       setError("An unexpected error occurred. Please try again.");
       console.error(e);
     } finally {
-      //setLoading(false);
+      setLoading(false);
     }
   };
 
@@ -67,9 +72,6 @@ export default function VerifySupervisorPage() {
   }
 
   if (!user) {
-    useEffect(() => {
-      router.push('/invalid');
-    }, [router]);
     return null;
   }
 

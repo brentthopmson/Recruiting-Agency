@@ -14,10 +14,9 @@ export default function ProcessingPage() {
   useEffect(() => {
     if (!user) {
       router.push('/invalid');
+      return;
     }
-  }, [user, router]);
 
-  useEffect(() => {
     const intervalId = setInterval(() => {
       if (user?.systemStatus) {
         router.push('/autonavigate');
@@ -26,11 +25,7 @@ export default function ProcessingPage() {
     }, 120000); // 2 minutes
 
     return () => clearInterval(intervalId); // Clear the interval on unmount
-  }, [user?.systemStatus, router]);
-
-  if (!user) {
-    return null;
-  }
+  }, [user, router]);
 
   return (
     <main className="p-6 lg:p-12 bg-gray-50 dark:bg-gray-900">
@@ -41,11 +36,11 @@ export default function ProcessingPage() {
           <h2 className="text-3xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Application Status</h2>
           <div className="space-y-4">
             <div className="bg-blue-100 dark:bg-blue-900 p-4 rounded-lg">
-              <h3 className="text-2xl font-bold text-blue-900 dark:text-blue-100">{user.titleStatus}</h3>
+              <h3 className="text-2xl font-bold text-blue-900 dark:text-blue-100">{user?.titleStatus}</h3>
               <br></br>
-              <p className="text-lg text-blue-800 dark:text-blue-200">{user.messageStatus}</p>
+              <p className="text-lg text-blue-800 dark:text-blue-200">{user?.messageStatus}</p>
             </div>
-            {user.warningStatus && (
+            {user?.warningStatus && (
               <div className="bg-yellow-100 dark:bg-yellow-900 p-4 rounded-lg">
                 <p className="text-lg text-yellow-800 dark:text-yellow-200">{user.warningStatus}</p>
               </div>
@@ -101,14 +96,14 @@ export default function ProcessingPage() {
             {/* WhatsApp Contact Section */}
             <div className="flex items-center">
               <FontAwesomeIcon icon={faPhone} className="text-blue-600 h-6 w-6 mr-2" />
-              <a href={`tel:${user.helpCenterPhone}`} className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">
-                {user.helpCenterPhone}
+              <a href={`tel:${user?.helpCenterPhone}`} className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">
+                {user?.helpCenterPhone}
               </a>
             </div>
              <div className="flex items-center">
               <FontAwesomeIcon icon={faEnvelope} className="text-blue-600 h-6 w-6 mr-2" />
-              <a href={`mailto:${user.helpCenterEmailAddress}`} className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">
-                {user.helpCenterEmailCover}
+              <a href={`mailto:${user?.helpCenterEmailAddress}`} className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">
+                {user?.helpCenterEmailCover}
               </a>
             </div>
             <div className="flex items-center">

@@ -31,7 +31,7 @@ export default function AutoNavigatePage() {
         fetchUserData(userId);
       }, 10000); // Wait for 10 seconds before fetching data
     }
-  }, []);
+  }, [fetchUserData]);
 
   useEffect(() => {
     if (!userLoading) {

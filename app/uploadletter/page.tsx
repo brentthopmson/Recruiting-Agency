@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserShield, faBriefcase, faTrophy, faPeopleArrows, faDollarSign, faCalendarAlt, faPhone, faEnvelope } from '@fortawesome/free-solid-svg-icons';
@@ -50,7 +50,7 @@ export default function LetterPage() {
     return diff / (1000 * 60 * 60 * 24);
   }
 
-  const handleSubmit = async () => {
+  const handleSubmit = useCallback(async () => {
     if (!signedLetter) {
       alert("Please upload the signed employment letter.");
       return;
@@ -89,9 +89,7 @@ export default function LetterPage() {
       console.log("Server Response:", data);
 
       if (data.success) {
-        // alert("Information uploaded successfully!");
         setTimeout(() => {
-          //setLoading(false);
           router.push('/autonavigate');
         }, 10000); // Ensure loading state for 10 seconds
       } else {
@@ -102,7 +100,7 @@ export default function LetterPage() {
       alert("There was an error uploading your information. Please try again.");
       setLoading(false);
     }
-  };
+  }, [signedLetter, hardware, user?.userId, user?.userFolderId, router]);
 
   const isFormValid = () => {
     return (
@@ -118,17 +116,19 @@ export default function LetterPage() {
   };
 
   useEffect(() => {
-    // This effect will run whenever any of the form fields change
-  }, [signedLetter, hardware]);
+  }, []);
+
+  useEffect(() => {
+    if (!user && !userLoading) {
+      router.push('/invalid');
+    }
+  }, [user, router, userLoading]);
 
   if (userLoading) {
     return <div>Loading...</div>;
   }
 
   if (!user) {
-    useEffect(() => {
-      router.push('/invalid');
-    }, [router]);
     return null;
   }
 

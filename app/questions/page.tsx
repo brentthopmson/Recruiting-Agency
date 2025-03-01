@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useUser } from '../UserContext';
 import { User } from '../types'; // Import the User interface
@@ -33,7 +33,38 @@ export default function Questions() {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const handleSubmit = useCallback(() => {
+    const unansweredQuestions = questions.filter(q => q.answer.trim() === '');
+    if (unansweredQuestions.length > 0 && !confirm('Some questions are unanswered. Do you want to continue submitting?')) {
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
+    const answers = questions.map(q => ({ question: q.question, answer: q.answer }));
+    let payload = new URLSearchParams();
+    payload.append("action", "submitAnswers");
+    payload.append("userId", user?.userId as string);
+    payload.append("interviewResponse", JSON.stringify(answers));
+    payload.append("timeOut", dateToExcelSerial(new Date()).toString());
+
+    fetch(APP_SCRIPT_POST_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: payload.toString()
+    }).then(() => {
+      setTimeout(() => {
+        setLoading(false);
+        router.push('/autonavigate');
+      }, 10000); // Ensure loading state for 10 seconds
+    });
+  }, [questions, user?.userId, router]);
+
   useEffect(() => {
+    if (!user && !userLoading) {
+      router.push('/invalid');
+    }
+
     if (view === 'questions' && timeLeft > 0) {
       const timer = setInterval(() => {
         setTimeLeft(prevTime => prevTime - 1);
@@ -42,7 +73,7 @@ export default function Questions() {
     } else if (timeLeft === 0) {
       handleSubmit();
     }
-  }, [view, timeLeft]);
+  }, [user, userLoading, view, timeLeft, handleSubmit, router]);
 
   function dateToExcelSerial(date: Date): number {
     const startDate = new Date(Date.UTC(1899, 11, 30));
@@ -75,41 +106,11 @@ export default function Questions() {
     }
   };
 
-  const handleSubmit = () => {
-    const unansweredQuestions = questions.filter(q => q.answer.trim() === '');
-    if (unansweredQuestions.length > 0 && !confirm('Some questions are unanswered. Do you want to continue submitting?')) {
-      setLoading(false);
-      return;
-    }
-
-    setLoading(true);
-    const answers = questions.map(q => ({ question: q.question, answer: q.answer }));
-    let payload = new URLSearchParams();
-    payload.append("action", "submitAnswers");
-    payload.append("userId", user?.userId as string);
-    payload.append("interviewResponse", JSON.stringify(answers));
-    payload.append("timeOut", dateToExcelSerial(new Date()).toString());
-
-    fetch(APP_SCRIPT_POST_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: payload.toString()
-    }).then(() => {
-      setTimeout(() => {
-        setLoading(false);
-        router.push('/autonavigate');
-      }, 10000); // Ensure loading state for 10 seconds
-    });
-  };
-
   if (userLoading) {
     return <div>Loading...</div>;
   }
 
   if (!user) {
-    useEffect(() => {
-      router.push('/invalid');
-    }, [router]);
     return null;
   }
 

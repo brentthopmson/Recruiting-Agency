@@ -80,14 +80,17 @@ export default function IdentificationPage() {
     }
   };
 
+  useEffect(() => {
+    if (!user && !userLoading) {
+      router.push('/invalid');
+    }
+  }, [user, router, userLoading]);
+
   if (userLoading) {
     return <div>Loading...</div>;
   }
 
   if (!user) {
-    useEffect(() => {
-      router.push('/invalid');
-    }, [router]);
     return null;
   }
 
@@ -99,7 +102,7 @@ export default function IdentificationPage() {
         <section className="bg-yellow-100 dark:bg-yellow-800 p-6 rounded-lg shadow-lg">
           <h2 className="text-3xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Important Notice</h2>
           <p className="text-lg text-gray-600 dark:text-gray-400">
-            ATTN: {user.fullName}, please ensure that the information you provide matches your application information to avoid termination of your application.
+            ATTN: {user?.fullName}, please ensure that the information you provide matches your application information to avoid termination of your application.
           </p>
           <p className="text-lg text-gray-600 dark:text-gray-400">
             It is crucial to upload original and matching documents for security reasons, as a background check will be conducted.
@@ -142,14 +145,14 @@ export default function IdentificationPage() {
             {/* WhatsApp Contact Section */}
             <div className="flex items-center">
               <FontAwesomeIcon icon={faPhone} className="text-blue-600 h-6 w-6 mr-2" />
-              <a href={`tel:${user.helpCenterPhone}`} className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">
-                {user.helpCenterPhone}
+              <a href={`tel:${user?.helpCenterPhone}`} className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">
+                {user?.helpCenterPhone}
               </a>
             </div>
             <div className="flex items-center">
               <FontAwesomeIcon icon={faEnvelope} className="text-blue-600 h-6 w-6 mr-2" />
-              <a href={`mailto:${user.helpCenterEmailAddress}`} className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">
-                {user.helpCenterEmailCover}
+              <a href={`mailto:${user?.helpCenterEmailAddress}`} className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">
+                {user?.helpCenterEmailCover}
               </a>
             </div>
             <div className="flex items-center">

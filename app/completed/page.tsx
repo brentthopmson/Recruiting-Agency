@@ -15,10 +15,13 @@ export default function CompletedPage() {
     return <div>Loading...</div>;
   }
 
-  if (!user) {
-    useEffect(() => {
+  useEffect(() => {
+    if (!user) {
       router.push('/invalid');
-    }, [router]);
+    }
+  }, [user, router]);
+
+  if (!user) {
     return null;
   }
 

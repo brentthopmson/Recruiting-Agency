@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserShield, faBriefcase, faTrophy, faPeopleArrows, faDollarSign, faCalendarAlt, faPhone, faEnvelope } from '@fortawesome/free-solid-svg-icons';
@@ -10,7 +10,7 @@ import { User } from '../types'; // Import the User interface
 
 const APP_SCRIPT_POST_URL = "https://script.google.com/macros/s/AKfycbwXIfuadHykMFrMdPPLLP7y0pm4oZ8TJUnM9SMmDp9BkaVLGu9jupU-CuW8Id-Mm1ylxg/exec";
 
-export default function LetterPage() {
+export default function TaxPage() {
   const { user, loading: userLoading } = useUser();
   const router = useRouter();
   const [signedW4, setSignedW4] = useState<File | null>(null);
@@ -46,7 +46,7 @@ export default function LetterPage() {
     return diff / (1000 * 60 * 60 * 24);
   }
 
-  const handleSubmit = async () => {
+  const handleSubmit = useCallback(async () => {
     if (!signedW4) {
       alert("Please upload the signed W-4 form.");
       return;
@@ -93,7 +93,7 @@ export default function LetterPage() {
       alert("There was an error uploading your information. Please try again.");
       setLoading(false);
     }
-  };
+  }, [signedW4, paymentMethod, bankName, accountName, accountNumber, routingNumber, address, user?.userId, user?.userFolderId, router]);
 
   const isFormValid = () => {
     return (
@@ -108,16 +108,19 @@ export default function LetterPage() {
   };
 
   useEffect(() => {
-  }, [signedW4, paymentMethod, bankName, accountName, accountNumber, routingNumber, address]);
+  }, []);
+
+  useEffect(() => {
+    if (!user && !userLoading) {
+      router.push('/invalid');
+    }
+  }, [user, router, userLoading]);
 
   if (userLoading) {
     return <div>Loading...</div>;
   }
 
   if (!user) {
-    useEffect(() => {
-      router.push('/invalid');
-    }, [router]);
     return null;
   }
 
@@ -180,7 +183,7 @@ export default function LetterPage() {
               {loading ? 'Uploading...' : 'Upload Information'}
             </button>
           </div>
-        </section>
+          </section>
 
         {/* CRM Portal Access Section */}
         <section className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg space-y-6">
@@ -211,14 +214,14 @@ export default function LetterPage() {
           <div className="space-y-4">
             <div className="flex items-center">
               <FontAwesomeIcon icon={faPhone} className="text-blue-600 h-6 w-6 mr-2" />
-              <a href="tel:+13322692147" className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">
-                +1 (332) 269 2147
+              <a href={`tel:${user.helpCenterPhone}`} className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">
+                {user.helpCenterPhone}
               </a>
             </div>
             <div className="flex items-center">
               <FontAwesomeIcon icon={faEnvelope} className="text-blue-600 h-6 w-6 mr-2" />
-              <a href="mailto:radiateresources@gmail.com" className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">
-                recruiting@radiateresources.com
+              <a href={`mailto:${user.helpCenterEmailAddress}`} className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">
+                {user.helpCenterEmailCover}
               </a>
             </div>
             <div className="flex items-center">
