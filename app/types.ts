@@ -1,7 +1,20 @@
 export interface User {
   userId: string;
   admin: string;
+  organization: string;
+  orgAddress: string;
+  orgState: string;
+  logo: string;
   position: string;
+  roleList: string;
+  roleDescription: string;
+  helpCenterPhone: string;
+  helpCenterEmailCover: string;
+  helpCenterEmailAddress: string;
+  supervisorName: string;
+  supervisorPhoneNumber: string;
+
+
   fullName: string;
   phoneNumber: string;
   textMessage: string;

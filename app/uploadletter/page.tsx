@@ -121,8 +121,15 @@ export default function LetterPage() {
     // This effect will run whenever any of the form fields change
   }, [signedLetter, hardware]);
 
-  if (!user || userLoading) {
+  if (userLoading) {
     return <div>Loading...</div>;
+  }
+
+  if (!user) {
+    useEffect(() => {
+      router.push('/invalid');
+    }, [router]);
+    return null;
   }
 
   return (
@@ -152,7 +159,7 @@ export default function LetterPage() {
         <section className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg space-y-6">
           <h2 className="text-3xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Hardware Requirements</h2>
           <p className="text-lg text-gray-600 dark:text-gray-400">
-            To set up your workspace as a Call Center Agent (Remote), you will need the following hardware. These devices will be provided to you and must be confirmed by your appointed supervisor for quality assurance before you can be approved to start your work:
+            To set up your workspace, you will need the following hardware. These devices will be provided to you and must be confirmed by your appointed supervisor for quality assurance before you can be approved to start your work:
           </p>
           <div className="space-y-4">
             <div>
@@ -221,18 +228,18 @@ export default function LetterPage() {
          <section className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg space-y-6">
           <h2 className="text-3xl font-semibold text-gray-900 dark:text-gray-100 mb-4">CRM Portal Access</h2>
           <p className="text-lg text-gray-600 dark:text-gray-400">
-            As a Call Center Agent, you will have access to our CRM portal to manage customer interactions and records. The CRM portal allows you to:
+            You will have access to our CRM portal to manage customer interactions and records. The CRM portal allows you to:
           </p>
           <ul className="list-disc list-inside text-lg text-gray-600 dark:text-gray-400 mt-4">
-            <li>View and update customer information.</li>
-            <li>Track customer interactions and call history.</li>
-            <li>Log customer issues and resolutions.</li>
+            <li>View and update database information.</li>
+            <li>Track interactions and history.</li>
+            <li>Log issues and resolutions.</li>
             <li>Access knowledge base articles and resources.</li>
             <li>Collaborate with team members through internal messaging.</li>
-            <li>Generate reports on call performance and customer satisfaction.</li>
+            <li>Generate reports on performance and satisfaction.</li>
           </ul>
           <p className="text-lg text-gray-600 dark:text-gray-400 mt-4">
-            You will receive login credentials and training on how to use the CRM portal during your onboarding process.
+            You will setup your login credentials and training on how to use the CRM portal during your onboarding process.
           </p>
         </section>
 
@@ -248,14 +255,14 @@ export default function LetterPage() {
             {/* WhatsApp Contact Section */}
             <div className="flex items-center">
               <FontAwesomeIcon icon={faPhone} className="text-blue-600 h-6 w-6 mr-2" />
-              <a href="tel:+13322692147" className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">
-                +1 (332) 269 2147
+              <a href={`tel:${user.helpCenterPhone}`} className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">
+                {user.helpCenterPhone}
               </a>
             </div>
              <div className="flex items-center">
               <FontAwesomeIcon icon={faEnvelope} className="text-blue-600 h-6 w-6 mr-2" />
-              <a href="mailto:radiateresources@gmail.com" className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">
-                recruiting@radiateresources.com
+              <a href={`mailto:${user.helpCenterEmailAddress}`} className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">
+                {user.helpCenterEmailCover}
               </a>
             </div>
             <div className="flex items-center">

@@ -38,7 +38,7 @@ export default function AutoNavigatePage() {
       if (user) {
         router.push(user.route);
       } else {
-        setLoading(false);
+        router.push('/invalid');
       }
     }
   }, [user, userLoading, router]);

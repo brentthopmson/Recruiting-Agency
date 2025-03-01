@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPhone, faEnvelope, faCalendarAlt } from '@fortawesome/free-solid-svg-icons';
 import { faWhatsapp } from '@fortawesome/free-brands-svg-icons'; // Import from brands package
@@ -7,9 +9,13 @@ import { useUser } from '../UserContext';
 
 export default function ProcessingPage() {
   const { user } = useUser();
+  const router = useRouter();
 
   if (!user) {
-    return <div>Loading...</div>;
+    useEffect(() => {
+      router.push('/invalid');
+    }, [router]);
+    return null;
   }
 
   return (
@@ -36,7 +42,7 @@ export default function ProcessingPage() {
         <section className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
           <h2 className="text-3xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Job Description</h2>
           <p className="text-lg text-gray-600 dark:text-gray-400">
-            As a Call Center Agent (Remote), you will be responsible for handling inbound and outbound customer calls, providing excellent customer service, and resolving customer issues. Your key responsibilities will include:
+            As a Call Center Agent (Remote), you will be responsible for handling key responsibilities which include:
           </p>
           <ul className="list-disc list-inside text-lg text-gray-600 dark:text-gray-400 mt-4">
             <li>Answering customer inquiries and providing accurate information.</li>

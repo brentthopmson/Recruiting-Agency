@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useUser } from '../UserContext';
 
@@ -47,7 +47,10 @@ export default function VerifySupervisorPage() {
       const data = await response.json();
 
       if (data.success) {
-        router.push('/uploadtax');
+        setTimeout(() => {
+          //setLoading(false);
+          router.push('/autonavigate');
+        }, 10000);
       } else {
         setError(data.details || "Failed to update verification status. Please try again.");
       }
@@ -64,17 +67,26 @@ export default function VerifySupervisorPage() {
   }
 
   if (!user) {
-    return <div>User not found.</div>;
+    useEffect(() => {
+      router.push('/invalid');
+    }, [router]);
+    return null;
   }
 
   return (
     <main className="flex items-center justify-center p-6 lg:p-12 bg-gray-50 dark:bg-gray-900 h-screen">
       <div className="w-full max-w-md bg-white dark:bg-gray-800 rounded-lg shadow-md p-8 space-y-6">
         <div className="text-center">
-          <h2 className="text-3xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Verify Communication</h2>
+          <h2 className="text-3xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Verify Supervisor</h2>
           <p className="text-lg text-gray-600 dark:text-gray-400">
             Please contact your appointed supervisor to validate confidential communication. Your supervisor will provide you with a verification code during your call session. This verification is required before your workspace setup payment can be processed.
           </p>
+          {user.supervisorName && user.supervisorPhoneNumber && (
+            <p className="text-lg text-gray-600 dark:text-gray-400">
+              Contact your supervisor: <br />
+              {user.supervisorName} - <a href={`tel:${user.supervisorPhoneNumber}`}>{user.supervisorPhoneNumber}</a>
+            </p>
+          )}
         </div>
 
         {error && <div className="text-red-500">{error}</div>}

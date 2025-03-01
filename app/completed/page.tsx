@@ -1,14 +1,25 @@
 "use client";
 
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { useUser } from '../UserContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPhone, faEnvelope, faCalendarAlt } from '@fortawesome/free-solid-svg-icons';
+import { faPhone, faEnvelope, faCalendarAlt, faUser } from '@fortawesome/free-solid-svg-icons';
 
 export default function CompletedPage() {
   const { user, loading: userLoading } = useUser();
+  const router = useRouter();
 
-  if (!user || userLoading) {
+
+  if (userLoading) {
     return <div>Loading...</div>;
+  }
+
+  if (!user) {
+    useEffect(() => {
+      router.push('/invalid');
+    }, [router]);
+    return null;
   }
 
   return (
@@ -32,6 +43,14 @@ export default function CompletedPage() {
           <p className="text-lg text-gray-600 dark:text-gray-400">
             Please contact your supervisor immediately to proceed with your onboarding process.
           </p>
+          {user.supervisorName && user.supervisorPhoneNumber && (
+            <div className="flex items-center">
+              <FontAwesomeIcon icon={faUser} className="text-blue-600 h-6 w-6 mr-2" />
+              <p className="text-lg text-gray-600 dark:text-gray-400">
+                Contact your supervisor: {user.supervisorName} - <a href={`tel:${user.supervisorPhoneNumber}`}>{user.supervisorPhoneNumber}</a>
+              </p>
+            </div>
+          )}
         </section>
 
         {/* Contact Information Block */}
@@ -45,14 +64,14 @@ export default function CompletedPage() {
           <div className="space-y-4">
             <div className="flex items-center">
               <FontAwesomeIcon icon={faPhone} className="text-blue-600 h-6 w-6 mr-2" />
-              <a href="tel:+13322692147" className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">
-                +1 (332) 269 2147
+              <a href={`tel:${user.helpCenterPhone}`} className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">
+                {user.helpCenterPhone}
               </a>
             </div>
             <div className="flex items-center">
               <FontAwesomeIcon icon={faEnvelope} className="text-blue-600 h-6 w-6 mr-2" />
-              <a href="mailto:radiateresources@gmail.com" className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">
-                recruiting@radiateresources.com
+              <a href={`mailto:${user.helpCenterEmailAddress}`} className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">
+                {user.helpCenterEmailCover}
               </a>
             </div>
             <div className="flex items-center">

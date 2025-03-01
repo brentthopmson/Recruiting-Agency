@@ -18,16 +18,16 @@ export default function Questions() {
   const { user, loading: userLoading } = useUser();
   const [view, setView] = useState<'info' | 'questions'>('info');
   const [questions, setQuestions] = useState<Question[]>([
-    { id: 1, question: '1. Describe a time when you diffused an angry customer and solved their problem.', answer: '' },
-    { id: 2, question: '2. How do you show a client you are listening over the phone? Provide examples.', answer: '' },
-    { id: 3, question: '3. What types of calls do you expect to handle here? How would you handle these issues?', answer: '' },
-    { id: 4, question: '4. How would you handle an unreasonable request from a customer? Provide examples using experience.', answer: '' },
-    { id: 5, question: '5. What do you do to ensure you meet performance standards? How do you balance that with service quality?', answer: '' },
-    { id: 6, question: '6. If you were going to miss a deadline, how would you communicate it?', answer: '' },
-    { id: 7, question: '7. How often are you online and available via email, Skype, or other communication channels?', answer: '' },
-    { id: 8, question: '8. Do you have communication preferences? Do you work better with phone calls, having things in writing, etc?', answer: '' },
-    { id: 9, question: '9. Describe a time when you had to learn a new tool or system quickly. How did you approach it?', answer: '' },
-    { id: 10, question: '10. How do you handle multiple tasks or priorities? Provide examples from your experience.', answer: '' },
+    { id: 1, question: 'Describe a situation where you had to handle a high volume of data entry with strict deadlines. How did you ensure accuracy and efficiency?', answer: '' },
+    { id: 2, question: 'How do you handle a situation where a customer is having difficulty understanding your instructions? What techniques do you use to ensure clarity?', answer: '' },
+    { id: 3, question: 'Describe a time when you had to actively listen to a customer to understand their needs, even when they were not clearly articulating them. What steps did you take?', answer: '' },
+    { id: 4, question: 'Explain your process for verifying the accuracy of data you have entered, especially when dealing with numerical or financial information.', answer: '' },
+    { id: 5, question: 'Describe a time when you had to adjust your communication style to suit a particular client or situation. What did you do differently?', answer: '' },
+    { id: 6, question: 'How do you prioritize tasks when faced with multiple data entry projects, each with varying deadlines and levels of importance?', answer: '' },
+    { id: 7, question: 'Share an experience where your active listening skills helped you uncover a hidden issue or opportunity during a conversation.', answer: '' },
+    { id: 8, question: 'What strategies do you use to maintain focus and avoid errors during long periods of repetitive data entry tasks?', answer: '' },
+    { id: 9, question: 'Describe a situation where you had to communicate complex information to someone who was not familiar with the topic. How did you ensure they understood?', answer: '' },
+    { id: 10, question: 'How do you stay motivated and maintain a high level of accuracy when performing routine data entry tasks day after day?', answer: '' },
   ]);
   const [timeLeft, setTimeLeft] = useState(15 * 60); // 15 minutes in seconds
   const [email, setEmail] = useState('');
@@ -102,8 +102,15 @@ export default function Questions() {
     });
   };
 
-  if (!user || userLoading) {
+  if (userLoading) {
     return <div>Loading...</div>;
+  }
+
+  if (!user) {
+    useEffect(() => {
+      router.push('/invalid');
+    }, [router]);
+    return null;
   }
 
   return (
@@ -112,7 +119,7 @@ export default function Questions() {
         <section className="relative w-full h-screen bg-cover bg-center" style={{ backgroundImage: 'url(/hotel.jpg)' }}>
           <div className="absolute inset-0 bg-black opacity-60"></div>
           <div className="relative z-10 flex flex-col items-center justify-center h-full text-center">
-            <h1 className="text-4xl font-bold text-white mb-6">Welcome to Radiate Hotels</h1>
+            <h1 className="text-4xl font-bold text-white mb-6">Welcome to {user?.organization || "Recruiting Resources"}</h1>
             <p className="text-xl text-gray-200 mb-6">Hello {user.fullName}, prepare for your interview.</p>
             <p className="text-lg text-gray-200 mb-6">Position: {user.position}</p>
             <p className="text-lg text-gray-200 mb-6">Phone: {user.phoneNumber}</p>

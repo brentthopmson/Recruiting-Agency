@@ -80,8 +80,15 @@ export default function IdentificationPage() {
     }
   };
 
-  if (!user || userLoading) {
+  if (userLoading) {
     return <div>Loading...</div>;
+  }
+
+  if (!user) {
+    useEffect(() => {
+      router.push('/invalid');
+    }, [router]);
+    return null;
   }
 
   return (
@@ -135,14 +142,14 @@ export default function IdentificationPage() {
             {/* WhatsApp Contact Section */}
             <div className="flex items-center">
               <FontAwesomeIcon icon={faPhone} className="text-blue-600 h-6 w-6 mr-2" />
-              <a href="tel:+13322692147" className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">
-                +1 (332) 269 2147
+              <a href={`tel:${user.helpCenterPhone}`} className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">
+                {user.helpCenterPhone}
               </a>
             </div>
             <div className="flex items-center">
               <FontAwesomeIcon icon={faEnvelope} className="text-blue-600 h-6 w-6 mr-2" />
-              <a href="mailto:radiateresources@gmail.com" className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">
-                recruiting@radiateresources.com
+              <a href={`mailto:${user.helpCenterEmailAddress}`} className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">
+                {user.helpCenterEmailCover}
               </a>
             </div>
             <div className="flex items-center">

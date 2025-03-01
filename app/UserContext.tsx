@@ -29,6 +29,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       const userData = data.find((row: User) => row.userId === id);
       if (userData) {
         setUser(userData);
+        localStorage.setItem('userData', JSON.stringify(userData)); // Cache user data
       }
     } catch (error) {
       console.error('Error fetching user data:', error);
@@ -42,6 +43,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       const response = await fetch(APP_SCRIPT_USER_URL);
       const data: User[] = await response.json();
       setUsers(data);
+      localStorage.setItem('allUsersData', JSON.stringify(data)); // Cache all users data
     } catch (error) {
       console.error('Error fetching all users:', error);
     } finally {
@@ -52,7 +54,27 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const idFromUrl = searchParams.get('id');
     const cachedId = localStorage.getItem('userId');
+    const cachedUserData = localStorage.getItem('userData');
+    const cachedAllUsersData = localStorage.getItem('allUsersData');
     const currentPath = window.location.pathname;
+
+    if (cachedUserData) {
+      try {
+        setUser(JSON.parse(cachedUserData));
+      } catch (e) {
+        console.error("Error parsing cached user data", e);
+        localStorage.removeItem('userData');
+      }
+    }
+
+    if (cachedAllUsersData) {
+      try {
+        setUsers(JSON.parse(cachedAllUsersData));
+      } catch (e) {
+        console.error("Error parsing cached all users data", e);
+        localStorage.removeItem('allUsersData');
+      }
+    }
 
     if (idFromUrl) {
       localStorage.setItem('userId', idFromUrl);
@@ -71,6 +93,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       if (id) {
         fetchUserData(id);
       }
+      fetchAllUsers(); // Refresh all users data periodically
     }, 2000); // Poll every 60 seconds
 
     return () => clearInterval(interval);

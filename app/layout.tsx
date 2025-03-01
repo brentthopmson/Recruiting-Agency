@@ -2,7 +2,7 @@
 
 // This is a server component
 export const metadata = {
-  title: 'Radiate Resources',
+  title: 'Recruiting Resources',
   description: 'Specialized recruitment services for Radiate Hospitalities, connecting top talent with opportunities in the hospitality industry.',
 };
 

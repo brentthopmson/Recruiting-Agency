@@ -1,14 +1,17 @@
 "use client";
 
 import Link from 'next/link';
+import { useUser } from './UserContext';
 
 export default function Home() {
+  const { user } = useUser();
+
   return (
     <main className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900">
       <section className="relative w-full h-screen bg-cover bg-center" style={{ backgroundImage: 'url(/hotel.jpg)' }}>
         <div className="absolute inset-0 bg-black opacity-60"></div>
         <div className="relative z-10 flex flex-col items-center justify-center h-full text-center">
-          <h1 className="text-4xl font-bold text-white mb-6">Welcome to Radiate Hotels</h1>
+          <h1 className="text-4xl font-bold text-white mb-6">Welcome to {user?.organization || "Radiate Hotels"}</h1>
           <p className="text-xl text-gray-200 mb-6">Prepare for your interview.</p>
           <Link href="/autonavigate" className="bg-blue-600 text-white px-6 py-3 rounded-full text-lg hover:bg-blue-500 transition">
             Start Interview
