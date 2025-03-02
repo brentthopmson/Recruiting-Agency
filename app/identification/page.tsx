@@ -67,7 +67,7 @@ export default function IdentificationPage() {
 
       if (data.success) {
         setTimeout(() => {
-          setLoading(false);
+          //setLoading(false);
           router.push('/autonavigate');
         }, 10000); // Ensure loading state for 10 seconds
       } else {

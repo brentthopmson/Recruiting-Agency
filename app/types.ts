@@ -23,7 +23,7 @@ export interface User {
   timeIn: string;
   interviewResponse: string;
   timeOut: string;
-  userFolderId?: string;
+  userFolderId: string;
   frontId: string;
   backId: string;
   selfie: string;
@@ -42,7 +42,7 @@ export interface User {
   route: string;
   titleStatus: string;
   messageStatus: string;
-  warningStatus?: string;
+  warningStatus: string;
   systemStatus: string;
   percentageStatus: string;
   adminStatus: string;
