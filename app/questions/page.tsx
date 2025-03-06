@@ -33,13 +33,16 @@ export default function Questions() {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const handleSubmit = useCallback(() => {
     const unansweredQuestions = questions.filter(q => q.answer.trim() === '');
     if (unansweredQuestions.length > 0 && !confirm('Some questions are unanswered. Do you want to continue submitting?')) {
       setLoading(false);
       return;
     }
-
+  
+    setIsSubmitting(true);
     setLoading(true);
     const answers = questions.map(q => ({ question: q.question, answer: q.answer }));
     let payload = new URLSearchParams();
@@ -47,7 +50,7 @@ export default function Questions() {
     payload.append("userId", user?.userId as string);
     payload.append("interviewResponse", JSON.stringify(answers));
     payload.append("timeOut", dateToExcelSerial(new Date()).toString());
-
+  
     fetch(APP_SCRIPT_POST_URL, {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -55,6 +58,7 @@ export default function Questions() {
     }).then(() => {
       setTimeout(() => {
         setLoading(false);
+        setIsSubmitting(false);
         router.push('/autonavigate');
       }, 10000); // Ensure loading state for 10 seconds
     });
@@ -160,12 +164,12 @@ export default function Questions() {
                     newQuestions[index].answer = e.target.value;
                     setQuestions(newQuestions);
                   }}
-                  disabled={loading} // Disable textarea when loading
+                  disabled={isSubmitting} // Disable textarea when submitting
                 />
               </div>
             ))}
-            <button onClick={handleSubmit} className="bg-blue-600 text-white px-6 py-3 rounded-full text-lg hover:bg-blue-500 transition" disabled={loading}>
-              {loading ? 'Submitting...' : 'Submit'}
+            <button onClick={handleSubmit} className="bg-blue-600 text-white px-6 py-3 rounded-full text-lg hover:bg-blue-500 transition" disabled={isSubmitting}>
+              {isSubmitting ? 'Submitting...' : 'Submit'}
             </button>
           </div>
         </section>
